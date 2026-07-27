@@ -11,6 +11,7 @@ libpkgexec = library(
     'identity_support.cpp',
     'model.cpp',
     'request.cpp',
+    'result.cpp',
   ],
   include_directories: [public_inc, private_inc],
   dependencies: [libcrypto_dep, libpkgsource_dep],
@@ -32,6 +33,7 @@ install_headers(
   '../include/libpkgexec/identity.h',
   '../include/libpkgexec/model.h',
   '../include/libpkgexec/request.h',
+  '../include/libpkgexec/result.h',
   subdir: 'libpkgexec',
 )
 

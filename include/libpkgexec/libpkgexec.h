@@ -6,3 +6,4 @@
 #include <libpkgexec/identity.h>
 #include <libpkgexec/model.h>
 #include <libpkgexec/request.h>
+#include <libpkgexec/result.h>

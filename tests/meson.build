@@ -5,6 +5,7 @@ if get_option('tests').enabled()
     'identity',
     'model',
     'request',
+    'result',
   ]
     test_binary = executable(
       test_name + '-test',

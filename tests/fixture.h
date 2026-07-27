@@ -92,5 +92,12 @@ inline pkgexec::execution_request request(bool reverse = false)
       cancellation_policy::graceful_then_forced(500));
 }
 
+inline pkgexec::backend_capability_profile profile(
+    const pkgexec::execution_request& value)
+{
+  return pkgexec::backend_capability_profile::seal(
+      backend(), value.required_guarantees());
+}
+
 
 } // namespace fixture
