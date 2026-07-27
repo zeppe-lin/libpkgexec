@@ -26,4 +26,29 @@ if get_option('tests').enabled()
   )
   test('public-headers', public_headers)
 
+  sh = find_program('sh')
+  test(
+    'metadata',
+    sh,
+    args: [
+      join_paths(meson.current_source_dir(), 'metadata_test.sh'),
+      meson.project_build_root(),
+    ],
+  )
+  test(
+    'release-metadata',
+    sh,
+    args: [
+      join_paths(meson.current_source_dir(), 'check_release_metadata.sh'),
+      meson.project_source_root(),
+    ],
+  )
+  test(
+    'authority-contract',
+    sh,
+    args: [
+      join_paths(meson.current_source_dir(), 'check_authority_contract.sh'),
+      meson.project_source_root(),
+    ],
+  )
 endif

@@ -40,4 +40,5 @@ libpkgsource_dep = dependency(
 pkgconf = import('pkgconfig')
 
 subdir('src')
+subdir('man')
 subdir('tests')

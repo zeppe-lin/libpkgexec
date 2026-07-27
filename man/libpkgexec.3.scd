@@ -1,0 +1,35 @@
+libpkgexec(3)
+
+# NAME
+
+libpkgexec - native sealed program-execution authority
+
+# SYNOPSIS
+
+*#include <libpkgexec/libpkgexec.h>*
+
+# DESCRIPTION
+
+*libpkgexec* defines immutable execution requests, call-scoped resource
+admission, backend capability profiles, and sealed execution evidence for exact
+*libpkgsource* program values.
+
+The core performs no process, namespace, mount, cgroup, or filesystem syscalls.
+Concrete executors implement *execution_backend* and must refuse requests whose
+required guarantees they cannot establish.
+
+# BOUNDARY
+
+The library does not acquire sources, materialize package inputs, build package
+artifacts, execute package lifecycle policy, apply filesystem transitions, or
+publish installed state.
+
+# ERRORS
+
+Contract failures throw *pkgexec::error*. Branch on *error_code*, not diagnostic
+text.
+
+# SEE ALSO
+
+*pkgexec_request*(3), *pkgexec_result*(3), *pkgexec_backend*(3),
+*pkgexec_semantics*(7), *libpkgsource*(3)
