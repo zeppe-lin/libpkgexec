@@ -18,7 +18,7 @@ libpkgexec = library(
   dependencies: [libcrypto_dep, libpkgsource_dep],
   install: true,
   version: meson.project_version(),
-  soversion: '0',
+  soversion: '1',
 )
 
 libpkgexec_dep = declare_dependency(

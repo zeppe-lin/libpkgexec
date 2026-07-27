@@ -1,6 +1,6 @@
 # Migration
 
-`libpkgexec 0.1.0` has no predecessor and no compatibility input format.
+`libpkgexec 1.0.0` has no predecessor and no compatibility input format.
 
 Existing build or lifecycle frontends must not translate ambient shell
 execution into partially populated execution evidence. They must construct a

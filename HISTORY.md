@@ -1,6 +1,6 @@
 # History
 
-## libpkgexec 0.1.0
+## libpkgexec 1.0.0
 
 Initial native execution-authority release.
 
