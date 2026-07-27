@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include <libpkgexec/backend.h>
 #include <libpkgexec/error.h>
 #include <libpkgexec/identity.h>
 #include <libpkgexec/model.h>

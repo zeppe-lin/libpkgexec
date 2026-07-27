@@ -6,6 +6,7 @@ private_inc = include_directories('.')
 libpkgexec = library(
   'pkgexec',
   [
+    'backend.cpp',
     'error.cpp',
     'identity.cpp',
     'identity_support.cpp',
@@ -29,6 +30,7 @@ meson.override_dependency('libpkgexec', libpkgexec_dep)
 
 install_headers(
   '../include/libpkgexec/libpkgexec.h',
+  '../include/libpkgexec/backend.h',
   '../include/libpkgexec/error.h',
   '../include/libpkgexec/identity.h',
   '../include/libpkgexec/model.h',

@@ -99,5 +99,15 @@ inline pkgexec::backend_capability_profile profile(
       backend(), value.required_guarantees());
 }
 
+inline std::vector<pkgexec::resource_materialization> materializations()
+{
+  using namespace pkgexec;
+  return {
+      resource_materialization(resource("source-main"), "/host/source"),
+      resource_materialization(resource("workspace"), "/host/workspace"),
+      resource_materialization(resource("package-root"), "/host/package"),
+      resource_materialization(resource("temporary"), "/host/temporary"),
+  };
+}
 
 } // namespace fixture

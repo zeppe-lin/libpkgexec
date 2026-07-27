@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Alexandr Savca
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <libpkgexec/backend.h>
 #include <libpkgexec/error.h>
 #include <libpkgexec/identity.h>
 #include <libpkgexec/libpkgexec.h>
