@@ -24,6 +24,7 @@ if (library_kind == 'static') != want_static
 endif
 
 libcrypto_dep = dependency('libcrypto', required: true, static: want_static)
+threads_dep = dependency('threads')
 libpkgsource_dep = dependency(
   'libpkgsource',
   version: '>=1.1.0',

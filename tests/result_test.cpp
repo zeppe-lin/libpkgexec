@@ -85,6 +85,63 @@ int main()
           cleanup_outcome::verified,
           execution_failure_kind::program_terminated_by_signal));
 
+
+  auto cancellation = cancellation_source::for_request(request);
+  const auto token = cancellation.token();
+  TEST_EXEC_THROWS(error_code::invalid_control,
+      execution_result::cancelled_before_start(
+          request, profile, token, {execution_guarantee::cancellation}));
+  TEST_EXEC_THROWS(error_code::invalid_control,
+      execution_result::failed_before_start(
+          request, profile, execution_failure_kind::cancelled));
+
+  TEST_CHECK(cancellation.request_cancellation());
+  const auto cancelled_before = execution_result::cancelled_before_start(
+      request, profile, token, {execution_guarantee::cancellation},
+      "first cancellation diagnostic");
+  const auto same_cancelled_before = execution_result::cancelled_before_start(
+      request, profile, token, {execution_guarantee::cancellation},
+      "different cancellation diagnostic");
+  TEST_CHECK(cancelled_before.status() == execution_status::failed);
+  TEST_CHECK(cancelled_before.start_state() == execution_start_state::not_started);
+  TEST_CHECK(cancelled_before.failure() == execution_failure_kind::cancelled);
+  TEST_CHECK(!cancelled_before.termination());
+  TEST_CHECK(cancelled_before.identity() == same_cancelled_before.identity());
+  TEST_EXEC_THROWS(error_code::inconsistent_result,
+      execution_result::cancelled_before_start(
+          request, profile, token, {}));
+
+  const auto other_request = fixture::request_with_cancellation(
+      cancellation_policy::graceful_then_forced(700));
+  auto other_cancellation = cancellation_source::for_request(other_request);
+  TEST_CHECK(other_cancellation.request_cancellation());
+  TEST_EXEC_THROWS(error_code::control_mismatch,
+      execution_result::cancelled_before_start(
+          request, profile, other_cancellation.token(),
+          {execution_guarantee::cancellation}));
+
+  const auto cancelled_after = execution_result::cancelled_after_start(
+      request, profile, token, request.interpreter(), output, error_output,
+      request.required_guarantees(), cleanup_outcome::verified,
+      "cancelled after start");
+  TEST_CHECK(cancelled_after.start_state() == execution_start_state::started);
+  TEST_CHECK(cancelled_after.failure() == execution_failure_kind::cancelled);
+  TEST_CHECK(cancelled_after.termination()->kind() ==
+             process_termination_kind::cancelled);
+  TEST_EXEC_THROWS(error_code::invalid_control,
+      execution_result::failed_after_start(
+          request, profile, request.interpreter(),
+          process_termination::cancelled(), output, error_output,
+          request.required_guarantees(), cleanup_outcome::verified,
+          execution_failure_kind::cancelled));
+
+  auto pending_cancellation = cancellation_source::for_request(request);
+  TEST_EXEC_THROWS(error_code::invalid_control,
+      execution_result::cancelled_after_start(
+          request, profile, pending_cancellation.token(), request.interpreter(),
+          output, error_output, request.required_guarantees(),
+          cleanup_outcome::verified));
+
   auto without_cleanup = request.required_guarantees();
   without_cleanup.erase(
       std::remove(without_cleanup.begin(), without_cleanup.end(),

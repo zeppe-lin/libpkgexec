@@ -21,3 +21,16 @@ grep -q 'std::filesystem::path host_path' "$root/include/libpkgexec/backend.h" |
   echo 'authority-contract: call-scoped concrete resource path boundary missing' >&2
   exit 1
 }
+
+grep -q 'class controlled_execution_backend' "$root/include/libpkgexec/backend.h" || {
+  echo 'authority-contract: controlled backend boundary missing' >&2
+  exit 1
+}
+grep -q 'require_cancellation_control(request, cancellation)' "$root/src/backend.cpp" || {
+  echo 'authority-contract: controlled dispatch does not admit request-bound control' >&2
+  exit 1
+}
+grep -q 'std::atomic<bool> requested' "$root/src/control.cpp" || {
+  echo 'authority-contract: cancellation state is not monotonic call-scoped state' >&2
+  exit 1
+}

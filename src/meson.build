@@ -16,7 +16,7 @@ libpkgexec = library(
     'result.cpp',
   ],
   include_directories: [public_inc, private_inc],
-  dependencies: [libcrypto_dep, libpkgsource_dep],
+  dependencies: [libcrypto_dep, libpkgsource_dep, threads_dep],
   install: true,
   version: meson.project_version(),
   soversion: '1',
@@ -25,7 +25,7 @@ libpkgexec = library(
 libpkgexec_dep = declare_dependency(
   link_with: libpkgexec,
   include_directories: public_inc,
-  dependencies: [libcrypto_dep, libpkgsource_dep],
+  dependencies: [libcrypto_dep, libpkgsource_dep, threads_dep],
 )
 meson.override_dependency('libpkgexec', libpkgexec_dep)
 
@@ -49,4 +49,5 @@ pkgconf.generate(
   subdirs: '.',
   requires: ['libpkgsource >= 1.1.0'],
   requires_private: ['libcrypto'],
+  libraries_private: ['-pthread'],
 )

@@ -20,3 +20,6 @@ grep -Eq '^Version:[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+$' "$pc" || fail 'missing v
 grep -Eq '^Libs:.*-lpkgexec([[:space:]]|$)' "$pc" || fail 'missing execution library'
 grep -Eq '(^|[[:space:],])libpkgsource[[:space:]]*>=[[:space:]]*1\.1\.0([[:space:],]|$)' "$pc" ||
   fail 'missing exact source authority floor'
+
+grep -Eq '^Libs.private:.*-pthread([[:space:]]|$)' "$pc" ||
+  fail 'missing static cancellation-control thread closure'

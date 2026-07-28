@@ -80,7 +80,9 @@ inline pkgexec::environment_policy environment(bool reverse_variables = false)
       std::move(variables));
 }
 
-inline pkgexec::execution_request request(bool reverse = false)
+inline pkgexec::execution_request request_with_cancellation(
+    pkgexec::cancellation_policy cancellation,
+    bool reverse = false)
 {
   using namespace pkgexec;
   return execution_request::seal(
@@ -89,7 +91,19 @@ inline pkgexec::execution_request request(bool reverse = false)
       execution_purpose::build(), interpreter(), root(), layout(reverse),
       environment(reverse), credential_policy::fixed(1000, 1000, {27, 44}),
       resource_limits::make(1000, 1024 * 1024, std::nullopt, 128, 64),
-      cancellation_policy::graceful_then_forced(500));
+      std::move(cancellation));
+}
+
+inline pkgexec::execution_request request(bool reverse = false)
+{
+  return request_with_cancellation(
+      pkgexec::cancellation_policy::graceful_then_forced(500), reverse);
+}
+
+inline pkgexec::execution_request uncontrolled_request(bool reverse = false)
+{
+  return request_with_cancellation(
+      pkgexec::cancellation_policy::disabled(), reverse);
 }
 
 inline pkgexec::backend_capability_profile profile(
