@@ -3,6 +3,7 @@
 #pragma once
 
 #include <libpkgexec/backend.h>
+#include <libpkgexec/control.h>
 #include <libpkgexec/error.h>
 #include <libpkgexec/identity.h>
 #include <libpkgexec/model.h>
