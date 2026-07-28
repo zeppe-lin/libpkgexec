@@ -1,5 +1,19 @@
 # History
 
+## libpkgexec 1.1.0
+
+Controlled execution release.
+
+- Added request-bound monotonic cancellation sources and copyable tokens.
+- Added concurrent cancellation observation and blocking token waits.
+- Added a controlled backend base without changing the v1.0 backend virtual table.
+- Made its ordinary execution path reject cancellation-enabled requests.
+- Added exact token admission for controlled execution calls.
+- Added not-started and started cancellation result constructors.
+- Required matching requested control evidence for cancellation results.
+- Kept cancellation timing and control state outside semantic identities.
+- Preserved existing disabled-cancellation backend and caller compatibility.
+
 ## libpkgexec 1.0.0
 
 Initial native execution-authority release.
