@@ -261,6 +261,11 @@ std::string_view to_string(execution_guarantee value) noexcept
     case execution_guarantee::complete_stdout_capture: return "complete-stdout-capture";
     case execution_guarantee::complete_stderr_capture: return "complete-stderr-capture";
     case execution_guarantee::cleanup_verified: return "cleanup-verified";
+    case execution_guarantee::cpu_time_limit: return "cpu-time-limit";
+    case execution_guarantee::address_space_limit: return "address-space-limit";
+    case execution_guarantee::file_size_limit: return "file-size-limit";
+    case execution_guarantee::open_files_limit: return "open-files-limit";
+    case execution_guarantee::process_count_limit: return "process-count-limit";
   }
   return "unknown";
 }

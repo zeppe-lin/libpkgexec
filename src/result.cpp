@@ -39,6 +39,97 @@ bool has_guarantee(const std::vector<execution_guarantee>& values,
   return std::binary_search(values.begin(), values.end(), value);
 }
 
+execution_guarantee guarantee_for(resource_limit_kind limit) noexcept
+{
+  switch (limit) {
+    case resource_limit_kind::cpu_time:
+      return execution_guarantee::cpu_time_limit;
+    case resource_limit_kind::address_space:
+      return execution_guarantee::address_space_limit;
+    case resource_limit_kind::file_size:
+      return execution_guarantee::file_size_limit;
+    case resource_limit_kind::open_files:
+      return execution_guarantee::open_files_limit;
+    case resource_limit_kind::process_count:
+      return execution_guarantee::process_count_limit;
+  }
+  return execution_guarantee::resource_limits;
+}
+
+bool limit_requested(const resource_limits& limits,
+                     resource_limit_kind limit) noexcept
+{
+  switch (limit) {
+    case resource_limit_kind::cpu_time:
+      return limits.cpu_time_milliseconds().has_value();
+    case resource_limit_kind::address_space:
+      return limits.address_space_bytes().has_value();
+    case resource_limit_kind::file_size:
+      return limits.file_size_bytes().has_value();
+    case resource_limit_kind::open_files:
+      return limits.open_files().has_value();
+    case resource_limit_kind::process_count:
+      return limits.process_count().has_value();
+  }
+  return false;
+}
+
+bool kind_specific_limit_guarantee(execution_guarantee guarantee) noexcept
+{
+  switch (guarantee) {
+    case execution_guarantee::cpu_time_limit:
+    case execution_guarantee::address_space_limit:
+    case execution_guarantee::file_size_limit:
+    case execution_guarantee::open_files_limit:
+    case execution_guarantee::process_count_limit:
+      return true;
+    case execution_guarantee::exact_interpreter:
+    case execution_guarantee::closed_environment:
+    case execution_guarantee::root_view:
+    case execution_guarantee::read_only_resources:
+    case execution_guarantee::writable_resources:
+    case execution_guarantee::fixed_credentials:
+    case execution_guarantee::network_denied:
+    case execution_guarantee::loopback_isolated:
+    case execution_guarantee::resource_limits:
+    case execution_guarantee::cancellation:
+    case execution_guarantee::complete_stdout_capture:
+    case execution_guarantee::complete_stderr_capture:
+    case execution_guarantee::cleanup_verified:
+      return false;
+  }
+  return false;
+}
+
+void require_limit_guarantee_shape(
+    const std::vector<execution_guarantee>& guarantees,
+    error_code code,
+    const char* subject)
+{
+  const bool aggregate = has_guarantee(
+      guarantees, execution_guarantee::resource_limits);
+  const bool kind_specific = std::any_of(
+      guarantees.begin(), guarantees.end(), kind_specific_limit_guarantee);
+  if (aggregate != kind_specific) {
+    throw error(code, std::string(subject) +
+        " must combine resource-limits with at least one exact limit kind");
+  }
+}
+
+void require_requested_limit_guarantees(
+    const std::vector<execution_guarantee>& established,
+    const execution_request& request)
+{
+  for (const auto guarantee : established) {
+    if ((guarantee == execution_guarantee::resource_limits ||
+         kind_specific_limit_guarantee(guarantee)) &&
+        !has_guarantee(request.required_guarantees(), guarantee)) {
+      throw error(error_code::inconsistent_result,
+                  "execution result claims an unrequested resource limit");
+    }
+  }
+}
+
 backend_capability_profile_identity identify_profile(
     const backend_identity& backend,
     const std::vector<execution_guarantee>& guarantees)
@@ -203,6 +294,9 @@ backend_capability_profile backend_capability_profile::seal(
     std::vector<execution_guarantee> guarantees)
 {
   guarantees = normalize_guarantees(std::move(guarantees));
+  require_limit_guarantee_shape(
+      guarantees, error_code::invalid_capability_profile,
+      "backend capability profile");
   auto identity = identify_profile(backend, guarantees);
   return backend_capability_profile(std::move(backend), std::move(guarantees),
                                     std::move(identity));
@@ -264,6 +358,10 @@ execution_result execution_result::failed_before_start(
                 "selected failure kind requires a started process");
   }
   established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  require_limit_guarantee_shape(
+      established_guarantees, error_code::inconsistent_result,
+      "execution result");
+  require_requested_limit_guarantees(established_guarantees, request);
   require_subset(established_guarantees, backend);
   if (std::any_of(established_guarantees.begin(), established_guarantees.end(),
                   [](execution_guarantee value) {
@@ -298,6 +396,10 @@ execution_result execution_result::cancelled_before_start(
 {
   require_requested_control(request, cancellation);
   established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  require_limit_guarantee_shape(
+      established_guarantees, error_code::inconsistent_result,
+      "execution result");
+  require_requested_limit_guarantees(established_guarantees, request);
   require_subset(established_guarantees, backend);
   if (!backend.supports(request)) {
     throw error(error_code::unsupported_request,
@@ -338,6 +440,10 @@ execution_result execution_result::succeeded(
     std::string diagnostic)
 {
   established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  require_limit_guarantee_shape(
+      established_guarantees, error_code::inconsistent_result,
+      "execution result");
+  require_requested_limit_guarantees(established_guarantees, request);
   if (!backend.supports(request) ||
       !includes(established_guarantees, request.required_guarantees())) {
     throw error(error_code::unsupported_request,
@@ -428,6 +534,10 @@ execution_result execution_result::failed_after_start_impl(
                 "observed interpreter does not match the sealed request");
   }
   established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  require_limit_guarantee_shape(
+      established_guarantees, error_code::inconsistent_result,
+      "execution result");
+  require_requested_limit_guarantees(established_guarantees, request);
   require_subset(established_guarantees, backend);
   if (!backend.supports(request)) {
     throw error(error_code::unsupported_request,
@@ -471,9 +581,21 @@ execution_result execution_result::failed_after_start_impl(
       }
       break;
     case execution_failure_kind::resource_limit_exceeded:
-      if (termination.kind() != process_termination_kind::resource_limited) {
+      if (termination.kind() != process_termination_kind::resource_limited ||
+          !termination.limit()) {
         throw error(error_code::invalid_failure,
                     "resource-limit failure requires limit termination evidence");
+      }
+      if (!limit_requested(request.limits(), *termination.limit())) {
+        throw error(error_code::invalid_failure,
+                    "resource-limit termination was not requested");
+      }
+      if (!has_guarantee(established_guarantees,
+                         execution_guarantee::resource_limits) ||
+          !has_guarantee(established_guarantees,
+                         guarantee_for(*termination.limit()))) {
+        throw error(error_code::inconsistent_result,
+                    "resource-limit termination lacks matching established guarantees");
       }
       break;
     case execution_failure_kind::cancelled:

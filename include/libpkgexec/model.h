@@ -56,6 +56,11 @@ enum class execution_guarantee {
   complete_stdout_capture,
   complete_stderr_capture,
   cleanup_verified,
+  cpu_time_limit,
+  address_space_limit,
+  file_size_limit,
+  open_files_limit,
+  process_count_limit,
 };
 
 enum class process_termination_kind {

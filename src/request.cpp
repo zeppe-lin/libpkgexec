@@ -54,6 +54,21 @@ void require_consistent_guarantee(
     case execution_guarantee::resource_limits:
       consistent = !limits.empty();
       break;
+    case execution_guarantee::cpu_time_limit:
+      consistent = limits.cpu_time_milliseconds().has_value();
+      break;
+    case execution_guarantee::address_space_limit:
+      consistent = limits.address_space_bytes().has_value();
+      break;
+    case execution_guarantee::file_size_limit:
+      consistent = limits.file_size_bytes().has_value();
+      break;
+    case execution_guarantee::open_files_limit:
+      consistent = limits.open_files().has_value();
+      break;
+    case execution_guarantee::process_count_limit:
+      consistent = limits.process_count().has_value();
+      break;
     case execution_guarantee::cancellation:
       consistent = cancellation.mode() != cancellation_mode::disabled;
       break;
@@ -108,6 +123,21 @@ std::vector<execution_guarantee> derive_required_guarantees(
   }
   if (!limits.empty()) {
     additional.push_back(execution_guarantee::resource_limits);
+  }
+  if (limits.cpu_time_milliseconds()) {
+    additional.push_back(execution_guarantee::cpu_time_limit);
+  }
+  if (limits.address_space_bytes()) {
+    additional.push_back(execution_guarantee::address_space_limit);
+  }
+  if (limits.file_size_bytes()) {
+    additional.push_back(execution_guarantee::file_size_limit);
+  }
+  if (limits.open_files()) {
+    additional.push_back(execution_guarantee::open_files_limit);
+  }
+  if (limits.process_count()) {
+    additional.push_back(execution_guarantee::process_count_limit);
   }
   if (cancellation.mode() != cancellation_mode::disabled) {
     additional.push_back(execution_guarantee::cancellation);
