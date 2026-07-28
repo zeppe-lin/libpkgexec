@@ -80,7 +80,14 @@ inline pkgexec::environment_policy environment(bool reverse_variables = false)
       std::move(variables));
 }
 
-inline pkgexec::execution_request request_with_cancellation(
+inline pkgexec::resource_limits default_limits()
+{
+  return pkgexec::resource_limits::make(
+      1000, 1024 * 1024, std::nullopt, 128, 64);
+}
+
+inline pkgexec::execution_request request_with_limits(
+    pkgexec::resource_limits limits,
     pkgexec::cancellation_policy cancellation,
     bool reverse = false)
 {
@@ -90,8 +97,15 @@ inline pkgexec::execution_request request_with_cancellation(
                          "printf '%s\\n' build"),
       execution_purpose::build(), interpreter(), root(), layout(reverse),
       environment(reverse), credential_policy::fixed(1000, 1000, {27, 44}),
-      resource_limits::make(1000, 1024 * 1024, std::nullopt, 128, 64),
-      std::move(cancellation));
+      std::move(limits), std::move(cancellation));
+}
+
+inline pkgexec::execution_request request_with_cancellation(
+    pkgexec::cancellation_policy cancellation,
+    bool reverse = false)
+{
+  return request_with_limits(
+      default_limits(), std::move(cancellation), reverse);
 }
 
 inline pkgexec::execution_request request(bool reverse = false)

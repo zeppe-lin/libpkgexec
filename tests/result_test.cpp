@@ -17,6 +17,16 @@ int main()
 
   const auto output = stream_capture::retained("stdout\n");
   const auto error_output = stream_capture::retained("stderr\n");
+
+  TEST_EXEC_THROWS(error_code::invalid_capability_profile,
+      backend_capability_profile::seal(
+          fixture::backend("kind-only-limit-profile"),
+          {execution_guarantee::address_space_limit}));
+  TEST_EXEC_THROWS(error_code::invalid_capability_profile,
+      backend_capability_profile::seal(
+          fixture::backend("aggregate-only-limit-profile"),
+          {execution_guarantee::resource_limits}));
+
   const auto success = execution_result::succeeded(
       request, profile, request.interpreter(), output, error_output,
       request.required_guarantees(), "first diagnostic");
@@ -85,6 +95,61 @@ int main()
           cleanup_outcome::verified,
           execution_failure_kind::program_terminated_by_signal));
 
+  const auto limited = execution_result::failed_after_start(
+      request, profile, request.interpreter(),
+      process_termination::resource_limited(resource_limit_kind::address_space),
+      output, error_output, request.required_guarantees(),
+      cleanup_outcome::verified,
+      execution_failure_kind::resource_limit_exceeded);
+  TEST_CHECK(limited.failure() ==
+             execution_failure_kind::resource_limit_exceeded);
+  TEST_CHECK(limited.termination()->limit() ==
+             std::optional<resource_limit_kind>(resource_limit_kind::address_space));
+
+  TEST_EXEC_THROWS(error_code::invalid_failure,
+      execution_result::failed_after_start(
+          request, profile, request.interpreter(),
+          process_termination::resource_limited(resource_limit_kind::file_size),
+          output, error_output, request.required_guarantees(),
+          cleanup_outcome::verified,
+          execution_failure_kind::resource_limit_exceeded));
+
+  auto without_address_limit = request.required_guarantees();
+  without_address_limit.erase(
+      std::remove(without_address_limit.begin(), without_address_limit.end(),
+                  execution_guarantee::address_space_limit),
+      without_address_limit.end());
+  TEST_EXEC_THROWS(error_code::inconsistent_result,
+      execution_result::failed_after_start(
+          request, profile, request.interpreter(),
+          process_termination::resource_limited(resource_limit_kind::address_space),
+          output, error_output, without_address_limit,
+          cleanup_outcome::verified,
+          execution_failure_kind::resource_limit_exceeded));
+
+  const auto no_limits = fixture::request_with_limits(
+      resource_limits::make(), cancellation_policy::disabled());
+  auto extra_limit_profile_guarantees = no_limits.required_guarantees();
+  extra_limit_profile_guarantees.push_back(execution_guarantee::resource_limits);
+  extra_limit_profile_guarantees.push_back(
+      execution_guarantee::address_space_limit);
+  const auto extra_limit_profile = backend_capability_profile::seal(
+      fixture::backend("extra-limit"), extra_limit_profile_guarantees);
+  auto malformed_evidence = no_limits.required_guarantees();
+  malformed_evidence.push_back(execution_guarantee::address_space_limit);
+  TEST_EXEC_THROWS(error_code::inconsistent_result,
+      execution_result::succeeded(
+          no_limits, extra_limit_profile, no_limits.interpreter(),
+          output, error_output, malformed_evidence));
+
+  auto unrequested_limit_evidence = no_limits.required_guarantees();
+  unrequested_limit_evidence.push_back(execution_guarantee::resource_limits);
+  unrequested_limit_evidence.push_back(
+      execution_guarantee::address_space_limit);
+  TEST_EXEC_THROWS(error_code::inconsistent_result,
+      execution_result::succeeded(
+          no_limits, extra_limit_profile, no_limits.interpreter(),
+          output, error_output, unrequested_limit_evidence));
 
   auto cancellation = cancellation_source::for_request(request);
   const auto token = cancellation.token();

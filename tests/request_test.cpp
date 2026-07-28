@@ -32,6 +32,11 @@ int main()
   TEST_CHECK(has(first.required_guarantees(), execution_guarantee::writable_resources));
   TEST_CHECK(has(first.required_guarantees(), execution_guarantee::network_denied));
   TEST_CHECK(has(first.required_guarantees(), execution_guarantee::resource_limits));
+  TEST_CHECK(has(first.required_guarantees(), execution_guarantee::cpu_time_limit));
+  TEST_CHECK(has(first.required_guarantees(), execution_guarantee::address_space_limit));
+  TEST_CHECK(!has(first.required_guarantees(), execution_guarantee::file_size_limit));
+  TEST_CHECK(has(first.required_guarantees(), execution_guarantee::open_files_limit));
+  TEST_CHECK(has(first.required_guarantees(), execution_guarantee::process_count_limit));
   TEST_CHECK(has(first.required_guarantees(), execution_guarantee::cancellation));
   TEST_CHECK(has(first.required_guarantees(), execution_guarantee::cleanup_verified));
 
@@ -73,6 +78,35 @@ int main()
           first.credentials(), resource_limits::make(),
           cancellation_policy::disabled(),
           {execution_guarantee::network_denied}));
+
+  const auto no_limits = fixture::request_with_limits(
+      resource_limits::make(), cancellation_policy::disabled());
+  TEST_CHECK(!has(no_limits.required_guarantees(),
+                  execution_guarantee::resource_limits));
+  TEST_CHECK(!has(no_limits.required_guarantees(),
+                  execution_guarantee::address_space_limit));
+
+  const auto address_only = fixture::request_with_limits(
+      resource_limits::make(std::nullopt, 4096),
+      cancellation_policy::disabled());
+  TEST_CHECK(has(address_only.required_guarantees(),
+                 execution_guarantee::resource_limits));
+  TEST_CHECK(has(address_only.required_guarantees(),
+                 execution_guarantee::address_space_limit));
+  TEST_CHECK(!has(address_only.required_guarantees(),
+                  execution_guarantee::cpu_time_limit));
+  auto file_only = no_limits.required_guarantees();
+  file_only.push_back(execution_guarantee::resource_limits);
+  file_only.push_back(execution_guarantee::file_size_limit);
+  TEST_CHECK(!backend_capability_profile::seal(
+      fixture::backend("file-only"), file_only).supports(address_only));
+
+  TEST_EXEC_THROWS(error_code::invalid_policy,
+      execution_request::seal(
+          no_limits.program(), no_limits.purpose(), no_limits.interpreter(),
+          no_limits.root_view(), no_limits.resources(), no_limits.environment(),
+          no_limits.credentials(), no_limits.limits(), no_limits.cancellation(),
+          {execution_guarantee::file_size_limit}));
 
   return EXIT_SUCCESS;
 }

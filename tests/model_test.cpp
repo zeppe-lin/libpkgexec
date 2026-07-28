@@ -9,6 +9,12 @@ int main()
 {
   using namespace pkgexec;
 
+  static_assert(static_cast<int>(execution_guarantee::resource_limits) == 8);
+  static_assert(static_cast<int>(execution_guarantee::cancellation) == 9);
+  static_assert(static_cast<int>(execution_guarantee::cleanup_verified) == 12);
+  static_assert(static_cast<int>(execution_guarantee::cpu_time_limit) == 13);
+  static_assert(static_cast<int>(execution_guarantee::process_count_limit) == 17);
+
   TEST_CHECK(execution_purpose::build().kind() == execution_purpose_kind::build);
   TEST_CHECK(!execution_purpose::check().action());
   TEST_CHECK(execution_purpose::lifecycle(
@@ -80,6 +86,17 @@ int main()
                    credential_policy::fixed(1000, 1000, {1000}));
   TEST_EXEC_THROWS(error_code::invalid_policy,
                    credential_policy::fixed(1000, 1000, {27, 27}));
+
+  TEST_CHECK(to_string(execution_guarantee::cpu_time_limit) ==
+             "cpu-time-limit");
+  TEST_CHECK(to_string(execution_guarantee::address_space_limit) ==
+             "address-space-limit");
+  TEST_CHECK(to_string(execution_guarantee::file_size_limit) ==
+             "file-size-limit");
+  TEST_CHECK(to_string(execution_guarantee::open_files_limit) ==
+             "open-files-limit");
+  TEST_CHECK(to_string(execution_guarantee::process_count_limit) ==
+             "process-count-limit");
 
   TEST_CHECK(resource_limits::make().empty());
   TEST_EXEC_THROWS(error_code::invalid_policy,
