@@ -8,7 +8,10 @@ The model tests cover:
 - duplicate resource, mount, variable, and credential rejection;
 - typed build, check, and lifecycle purposes;
 - exact request sensitivity to program, purpose, interpreter, and policy;
-- derived execution guarantees;
+- aggregate and exact per-kind resource-limit guarantee derivation;
+- partial backend resource-limit capability support;
+- malformed and unrequested resource-limit profile and result rejection;
+- exact resource-limit termination attribution;
 - backend capability support;
 - successful execution evidence;
 - pre-start and started failure taxonomy;

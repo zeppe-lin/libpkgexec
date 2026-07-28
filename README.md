@@ -25,7 +25,8 @@ The v1 core owns:
 - logical read-only and writable resource layouts;
 - a closed process environment;
 - exact numeric credentials;
-- resource limits and cancellation policy;
+- resource limits with exact per-kind capability requirements;
+- cancellation policy;
 - monotonic call-scoped cancellation sources and tokens;
 - controlled backend dispatch for cancellation-enabled requests;
 - backend capability profiles;
@@ -59,7 +60,7 @@ select the same mode.
 
 ## Dependency
 
-`libpkgexec 1.1.0` requires `libpkgsource >= 1.1.0` and OpenSSL libcrypto.
+`libpkgexec 1.2.0` requires `libpkgsource >= 1.1.0` and OpenSSL libcrypto.
 
 ## License
 

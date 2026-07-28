@@ -23,6 +23,11 @@ Concrete host paths are not request authority. They are admitted separately by
 identity; the live cancellation signal is admitted separately through
 *pkgexec_control*(3).
 
+A non-empty resource-limit policy derives the aggregate *resource_limits*
+guarantee and one exact guarantee for every populated kind. A backend that
+supports only address-space and file-size limits can therefore admit those
+requests without claiming CPU-time, open-files, or process-count support.
+
 # INVARIANTS
 
 Resource slots and logical mount points are unique. Source and package-input

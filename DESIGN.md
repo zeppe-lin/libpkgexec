@@ -72,9 +72,23 @@ A backend capability profile says which guarantees a backend can establish.
 A request retains the guarantees it requires. An unsupported request must be
 refused before process start.
 
+Resource limits retain one aggregate `resource_limits` guarantee and one exact
+guarantee for every requested kind: CPU time, address space, file size, open
+files, or process count. A backend may advertise only the kinds it can realize
+truthfully. The aggregate guarantee and at least one exact kind must occur
+together in every capability profile or evidence set.
+
+The aggregate guarantee does not mean that every limit kind is supported. A
+request with an address-space limit, for example, requires both
+`resource_limits` and `address_space_limit`. This keeps capability admission
+truthful when one backend can realize only a subset of the native limit model.
+
 Evidence retains the guarantees actually established. Success requires all
-requested guarantees. A process may fail after valid isolation was established;
-that distinction remains visible.
+requested guarantees. Limit evidence may contain only kinds present in the
+sealed request; applying an undeclared limit is not a stronger guarantee but a
+different execution contract. Resource-limit termination evidence must name a
+requested limit whose exact guarantee was established. A process may fail after
+valid isolation was established; that distinction remains visible.
 
 ## Result domains
 

@@ -6,6 +6,7 @@
 - Concrete host paths never enter semantic identities.
 - The process environment is closed and explicit.
 - Unsupported guarantees are refused before process start.
+- Resource-limit support is advertised and retained by exact requested kind.
 - Cancellation control is request-bound, monotonic, and absent from identities.
 - Enabled cancellation never enters a controlled backend through the ordinary path.
 - Success requires all requested guarantees and verified cleanup.

@@ -37,6 +37,18 @@ controlled backend must reject a token for any other request and must not obtain
 cancellation intent from ambient signals, global flags, process identifiers, or
 controller storage.
 
+# RESOURCE LIMITS
+
+A limit value is request identity. Every non-empty limit policy requires the
+aggregate *resource_limits* guarantee and an exact guarantee for each populated
+kind. Capability profiles describe only the kinds a backend can establish. The
+aggregate guarantee and at least one exact kind always occur together. Evidence
+may retain only limit kinds present in the request.
+
+Resource-limit termination is exact evidence, not an interpretation of generic
+program failure. The named limit must occur in the request and its exact
+guarantee must have been established before process start.
+
 # FAILURE
 
 Program success does not prove isolation success. Successful evidence requires

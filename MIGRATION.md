@@ -1,5 +1,33 @@
 # Migration
 
+## From 1.1 to 1.2
+
+Resource-limit support is now profiled by exact kind. A request with any limit
+still requires `execution_guarantee::resource_limits` and additionally requires
+one guarantee for every populated field:
+
+- `cpu_time_limit`;
+- `address_space_limit`;
+- `file_size_limit`;
+- `open_files_limit`;
+- `process_count_limit`.
+
+Backends must advertise the aggregate guarantee plus only the exact kinds they
+can realize. The aggregate guarantee and at least one exact kind must occur
+together; either side alone is rejected as an invalid capability profile.
+Execution evidence follows the same shape and may claim only requested kinds.
+
+The identities of requests containing resource limits intentionally change
+because their required-guarantee set is now exact. Existing guarantee enum
+values were preserved and the new values were appended, so requests and
+profiles that contain no new limit guarantees retain their previous identities.
+The public class layouts, backend virtual tables, and SONAME remain unchanged.
+
+`resource_limit_exceeded` evidence must identify a limit present in the sealed
+request and must establish both the aggregate and matching kind-specific
+guarantees. Do not infer limit termination from an ordinary nonzero exit, an
+allocation failure, or an unrelated signal.
+
 ## From 1.0 to 1.1
 
 Existing backends and callers remain source-compatible for requests whose

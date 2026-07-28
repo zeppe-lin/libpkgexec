@@ -21,6 +21,13 @@ available, and cleanup outcome. Cancellation before start has no process
 termination. Cancellation after start retains cancelled termination. Both
 require a matching token whose signal was requested.
 
+Limit evidence may claim only kinds present in the sealed request. Applying an
+undeclared limit changes the execution contract and is not admitted as a
+stronger result. Resource-limit failure evidence names the exact requested kind,
+and both the aggregate and matching kind-specific guarantees must have been
+established. Ordinary nonzero exits, signals, or syscall failures do not become
+resource-limit evidence by guess.
+
 Diagnostic text is retained but excluded from semantic execution identity.
 Process IDs, temporary host paths, wall-clock timestamps, and elapsed time are
 not execution identity material.

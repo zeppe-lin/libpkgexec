@@ -1,5 +1,24 @@
 # History
 
+## libpkgexec 1.2.0
+
+Resource-limit capability refinement release.
+
+- Added exact CPU-time, address-space, file-size, open-files, and
+  process-count guarantees.
+- Made resource-limited requests derive the aggregate guarantee and every
+  requested kind.
+- Allowed backend profiles to advertise only the limit kinds they can realize
+  truthfully.
+- Required aggregate and exact limit guarantees to occur together in profiles
+  and results.
+- Rejected result evidence for resource limits absent from the request.
+- Required resource-limit termination evidence to name a requested and
+  established kind.
+- Preserved existing guarantee ordinals and identities for requests without
+  resource limits.
+- Kept the backend virtual tables and SONAME unchanged.
+
 ## libpkgexec 1.1.0
 
 Controlled execution release.
