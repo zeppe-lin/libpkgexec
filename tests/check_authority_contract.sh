@@ -34,3 +34,28 @@ grep -q 'std::atomic<bool> requested' "$root/src/control.cpp" || {
   echo 'authority-contract: cancellation state is not monotonic call-scoped state' >&2
   exit 1
 }
+
+for guarantee in \
+  cpu_time_limit address_space_limit file_size_limit open_files_limit process_count_limit
+do
+  grep -q "execution_guarantee::$guarantee" "$root/src/request.cpp" || {
+    echo "authority-contract: request does not derive $guarantee" >&2
+    exit 1
+  }
+done
+grep -q 'invalid_capability_profile' "$root/src/result.cpp" || {
+  echo 'authority-contract: malformed limit capability profiles are not rejected' >&2
+  exit 1
+}
+grep -q 'resource-limit termination was not requested' "$root/src/result.cpp" || {
+  echo 'authority-contract: limit termination is not bound to the request' >&2
+  exit 1
+}
+grep -q 'guarantee_for(\*termination.limit())' "$root/src/result.cpp" || {
+  echo 'authority-contract: limit termination lacks exact guarantee admission' >&2
+  exit 1
+}
+grep -q 'execution result claims an unrequested resource limit' "$root/src/result.cpp" || {
+  echo 'authority-contract: result limits are not confined to the request' >&2
+  exit 1
+}
