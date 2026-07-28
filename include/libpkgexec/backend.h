@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <vector>
 
+#include <libpkgexec/control.h>
 #include <libpkgexec/result.h>
 
 namespace pkgexec {
@@ -55,6 +56,33 @@ public:
   [[nodiscard]] virtual execution_result execute(
       const execution_request& request,
       const execution_resources& resources) = 0;
+};
+
+/*! \brief Backend boundary for request-bound call-scoped cancellation.
+ *
+ *  The ordinary two-argument path is final and accepts only requests whose
+ *  cancellation policy is disabled. Enabled cancellation must enter through
+ *  the token-bearing overload.
+ */
+class controlled_execution_backend : public execution_backend {
+public:
+  ~controlled_execution_backend() override = default;
+
+  [[nodiscard]] execution_result execute(
+      const execution_request& request,
+      const execution_resources& resources) final;
+  [[nodiscard]] execution_result execute(
+      const execution_request& request,
+      const execution_resources& resources,
+      const cancellation_token& cancellation);
+protected:
+  [[nodiscard]] virtual execution_result execute_uncontrolled(
+      const execution_request& request,
+      const execution_resources& resources) = 0;
+  [[nodiscard]] virtual execution_result execute_controlled(
+      const execution_request& request,
+      const execution_resources& resources,
+      const cancellation_token& cancellation) = 0;
 };
 
 } // namespace pkgexec

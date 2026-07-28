@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include <libpkgexec/request.h>
+#include <libpkgexec/control.h>
 
 namespace pkgexec {
 
@@ -45,6 +45,13 @@ public:
       std::vector<execution_guarantee> established_guarantees = {},
       std::string diagnostic = {});
 
+  [[nodiscard]] static execution_result cancelled_before_start(
+      execution_request request,
+      backend_capability_profile backend,
+      const cancellation_token& cancellation,
+      std::vector<execution_guarantee> established_guarantees,
+      std::string diagnostic = {});
+
   [[nodiscard]] static execution_result succeeded(
       execution_request request,
       backend_capability_profile backend,
@@ -66,6 +73,17 @@ public:
       execution_failure_kind failure,
       std::string diagnostic = {});
 
+  [[nodiscard]] static execution_result cancelled_after_start(
+      execution_request request,
+      backend_capability_profile backend,
+      const cancellation_token& cancellation,
+      interpreter_identity observed_interpreter,
+      std::optional<stream_capture> standard_output,
+      std::optional<stream_capture> standard_error,
+      std::vector<execution_guarantee> established_guarantees,
+      cleanup_outcome cleanup,
+      std::string diagnostic = {});
+
   [[nodiscard]] execution_status status() const noexcept;
   [[nodiscard]] execution_start_state start_state() const noexcept;
   [[nodiscard]] const execution_request& request() const noexcept;
@@ -85,6 +103,19 @@ public:
   friend bool operator!=(const execution_result& lhs,
                          const execution_result& rhs) noexcept;
 private:
+  [[nodiscard]] static execution_result failed_after_start_impl(
+      execution_request request,
+      backend_capability_profile backend,
+      interpreter_identity observed_interpreter,
+      process_termination termination,
+      std::optional<stream_capture> standard_output,
+      std::optional<stream_capture> standard_error,
+      std::vector<execution_guarantee> established_guarantees,
+      cleanup_outcome cleanup,
+      execution_failure_kind failure,
+      bool cancellation_admitted,
+      std::string diagnostic);
+
   execution_result(execution_status status,
                    execution_start_state start_state,
                    execution_request request,

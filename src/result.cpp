@@ -178,6 +178,16 @@ void require_subset(const std::vector<execution_guarantee>& established,
   }
 }
 
+void require_requested_control(const execution_request& request,
+                               const cancellation_token& cancellation)
+{
+  require_cancellation_control(request, cancellation);
+  if (!cancellation.cancellation_requested()) {
+    throw error(error_code::invalid_control,
+                "cancellation evidence requires a requested cancellation signal");
+  }
+}
+
 } // namespace
 
 backend_capability_profile::backend_capability_profile(
@@ -245,6 +255,10 @@ execution_result execution_result::failed_before_start(
     std::vector<execution_guarantee> established_guarantees,
     std::string diagnostic)
 {
+  if (failure == execution_failure_kind::cancelled) {
+    throw error(error_code::invalid_control,
+                "pre-start cancellation requires call-scoped control evidence");
+  }
   if (!pre_start_failure(failure)) {
     throw error(error_code::invalid_failure,
                 "selected failure kind requires a started process");
@@ -263,6 +277,45 @@ execution_result execution_result::failed_before_start(
     throw error(error_code::unsupported_request,
                 "backend profile does not support the rejected request");
   }
+  auto identity = identify_result(
+      execution_status::failed, execution_start_state::not_started, request,
+      backend, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
+      established_guarantees, cleanup_outcome::not_required, failure);
+  return execution_result(
+      execution_status::failed, execution_start_state::not_started,
+      std::move(request), std::move(backend), std::nullopt, std::nullopt,
+      std::nullopt, std::nullopt, std::move(established_guarantees),
+      cleanup_outcome::not_required, failure, std::move(diagnostic),
+      std::move(identity));
+}
+
+execution_result execution_result::cancelled_before_start(
+    execution_request request,
+    backend_capability_profile backend,
+    const cancellation_token& cancellation,
+    std::vector<execution_guarantee> established_guarantees,
+    std::string diagnostic)
+{
+  require_requested_control(request, cancellation);
+  established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  require_subset(established_guarantees, backend);
+  if (!backend.supports(request)) {
+    throw error(error_code::unsupported_request,
+                "backend profile does not support the cancelled request");
+  }
+  if (!has_guarantee(established_guarantees,
+                     execution_guarantee::cancellation)) {
+    throw error(error_code::inconsistent_result,
+                "cancelled execution must establish cancellation control");
+  }
+  if (std::any_of(established_guarantees.begin(), established_guarantees.end(),
+                  [](execution_guarantee value) {
+                    return !before_start_guarantee(value);
+                  })) {
+    throw error(error_code::inconsistent_result,
+                "not-started cancellation cannot establish capture or cleanup guarantees");
+  }
+  const auto failure = execution_failure_kind::cancelled;
   auto identity = identify_result(
       execution_status::failed, execution_start_state::not_started, request,
       backend, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
@@ -321,6 +374,45 @@ execution_result execution_result::failed_after_start(
     std::vector<execution_guarantee> established_guarantees,
     cleanup_outcome cleanup,
     execution_failure_kind failure,
+    std::string diagnostic)
+{
+  return failed_after_start_impl(
+      std::move(request), std::move(backend), std::move(observed_interpreter),
+      std::move(termination), std::move(standard_output),
+      std::move(standard_error), std::move(established_guarantees), cleanup,
+      failure, false, std::move(diagnostic));
+}
+
+execution_result execution_result::cancelled_after_start(
+    execution_request request,
+    backend_capability_profile backend,
+    const cancellation_token& cancellation,
+    interpreter_identity observed_interpreter,
+    std::optional<stream_capture> standard_output,
+    std::optional<stream_capture> standard_error,
+    std::vector<execution_guarantee> established_guarantees,
+    cleanup_outcome cleanup,
+    std::string diagnostic)
+{
+  require_requested_control(request, cancellation);
+  return failed_after_start_impl(
+      std::move(request), std::move(backend), std::move(observed_interpreter),
+      process_termination::cancelled(), std::move(standard_output),
+      std::move(standard_error), std::move(established_guarantees), cleanup,
+      execution_failure_kind::cancelled, true, std::move(diagnostic));
+}
+
+execution_result execution_result::failed_after_start_impl(
+    execution_request request,
+    backend_capability_profile backend,
+    interpreter_identity observed_interpreter,
+    process_termination termination,
+    std::optional<stream_capture> standard_output,
+    std::optional<stream_capture> standard_error,
+    std::vector<execution_guarantee> established_guarantees,
+    cleanup_outcome cleanup,
+    execution_failure_kind failure,
+    bool cancellation_admitted,
     std::string diagnostic)
 {
   if (pre_start_failure(failure)) {
@@ -385,6 +477,10 @@ execution_result execution_result::failed_after_start(
       }
       break;
     case execution_failure_kind::cancelled:
+      if (!cancellation_admitted) {
+        throw error(error_code::invalid_control,
+                    "started cancellation requires call-scoped control evidence");
+      }
       if (termination.kind() != process_termination_kind::cancelled) {
         throw error(error_code::invalid_failure,
                     "cancellation failure requires cancellation evidence");

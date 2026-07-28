@@ -103,4 +103,24 @@ const resource_materialization& execution_resources::materialization(
   return *found;
 }
 
+execution_result controlled_execution_backend::execute(
+    const execution_request& request,
+    const execution_resources& resources)
+{
+  if (request.cancellation().mode() != cancellation_mode::disabled) {
+    throw error(error_code::invalid_control,
+                "enabled cancellation requires controlled backend execution");
+  }
+  return execute_uncontrolled(request, resources);
+}
+
+execution_result controlled_execution_backend::execute(
+    const execution_request& request,
+    const execution_resources& resources,
+    const cancellation_token& cancellation)
+{
+  require_cancellation_control(request, cancellation);
+  return execute_controlled(request, resources, cancellation);
+}
+
 } // namespace pkgexec
