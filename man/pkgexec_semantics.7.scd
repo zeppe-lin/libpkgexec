@@ -26,6 +26,17 @@ and typed failure. Diagnostic text and host observations are excluded.
 Logical process-visible paths are request policy. Concrete host paths are
 call-scoped backend resources and never enter semantic identities.
 
+# CANCELLATION
+
+Cancellation policy and grace period are request identity. A live cancellation
+source and its token are call-scoped operational control and have no semantic
+identity.
+
+The source is bound to one exact request. Its state changes at most once. A
+controlled backend must reject a token for any other request and must not obtain
+cancellation intent from ambient signals, global flags, process identifiers, or
+controller storage.
+
 # FAILURE
 
 Program success does not prove isolation success. Successful evidence requires
@@ -43,4 +54,4 @@ compatibility behavior.
 # SEE ALSO
 
 *libpkgexec*(3), *pkgexec_request*(3), *pkgexec_result*(3),
-*pkgexec_backend*(3)
+*pkgexec_backend*(3), *pkgexec_control*(3)

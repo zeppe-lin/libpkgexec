@@ -43,6 +43,29 @@ parallelism, umask, network access, stdin, stdout, stderr, and
 `SOURCE_DATE_EPOCH` are explicit. Additional variables are admitted by exact
 name and value. The backend must not inherit caller variables silently.
 
+## Cancellation control
+
+Cancellation policy is semantic request authority. It states whether
+cancellation is disabled or graceful-then-forced and retains the exact grace
+period. The event that asks one live execution to cancel is operational state.
+It must not change request identity.
+
+A `cancellation_source` is created for one cancellation-enabled request and
+owns a monotonic one-shot transition. Its copyable token retains the exact
+request identity, permits lock-free state queries, and permits blocking waits.
+No global flag, ambient signal handler, controller pathname, or process
+identifier is cancellation authority.
+
+`controlled_execution_backend` preserves the original backend ABI while adding
+an admitted control path. Its final ordinary path accepts only disabled
+cancellation. Its token-bearing path validates that the supplied token belongs
+to the exact request before backend implementation code runs.
+
+A cancellation result requires the matching token to have transitioned.
+Cancellation before process start is retained as failed, not-started evidence
+without process termination. Cancellation after process start retains cancelled
+termination and the normal started-execution cleanup and capture obligations.
+
 ## Capabilities and guarantees
 
 A backend capability profile says which guarantees a backend can establish.
@@ -65,9 +88,12 @@ retained but excluded from semantic identity.
 
 ## Backend boundary
 
-`execution_backend` is abstract. The core does not choose process creation,
-mount realization, namespace, Landlock, cgroup, signal, or log-capture
-mechanisms.
+`execution_backend` is abstract. Its original two-argument surface remains the
+boundary for requests with disabled cancellation. `controlled_execution_backend`
+adds request-bound cancellation without changing that existing virtual table.
+
+The core does not choose process creation, mount realization, namespace,
+Landlock, cgroup, signal, pidfd, or log-capture mechanisms.
 
 A future `libpkgexec-linux` may implement those mechanisms. It must refuse a
 request if a requested guarantee cannot be established; silent degradation is

@@ -19,7 +19,9 @@ Build, check, and lifecycle purposes are distinct. Lifecycle purpose is bound to
 one exact *pkgsource::lifecycle_action*.
 
 Concrete host paths are not request authority. They are admitted separately by
-*execution_resources* at backend call time.
+*execution_resources* at backend call time. Cancellation policy is request
+identity; the live cancellation signal is admitted separately through
+*pkgexec_control*(3).
 
 # INVARIANTS
 
@@ -30,4 +32,5 @@ are normalized where order is not semantic.
 
 # SEE ALSO
 
-*libpkgexec*(3), *pkgexec_backend*(3), *pkgexec_semantics*(7)
+*libpkgexec*(3), *pkgexec_control*(3), *pkgexec_backend*(3),
+*pkgexec_semantics*(7)

@@ -14,6 +14,10 @@ The model tests cover:
 - pre-start and started failure taxonomy;
 - output capture and cleanup invariants;
 - exact call-scoped resource admission;
+- request-bound cancellation source and token admission;
+- monotonic, idempotent, concurrently observable cancellation;
+- controlled versus uncontrolled backend dispatch;
+- not-started and started cancellation evidence;
 - the abstract backend contract through a fake backend;
 - standalone public-header compilation;
 - pkg-config, release, and authority-boundary contracts.

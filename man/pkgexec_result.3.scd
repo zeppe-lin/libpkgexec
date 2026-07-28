@@ -17,7 +17,9 @@ exit status, and verified cleanup.
 
 Failed evidence retains a typed failure kind, process termination where a
 process started, guarantees actually established, stream evidence where
-available, and cleanup outcome.
+available, and cleanup outcome. Cancellation before start has no process
+termination. Cancellation after start retains cancelled termination. Both
+require a matching token whose signal was requested.
 
 Diagnostic text is retained but excluded from semantic execution identity.
 Process IDs, temporary host paths, wall-clock timestamps, and elapsed time are
@@ -25,5 +27,6 @@ not execution identity material.
 
 # SEE ALSO
 
-*libpkgexec*(3), *pkgexec_request*(3), *pkgexec_backend*(3),
+*libpkgexec*(3), *pkgexec_request*(3), *pkgexec_control*(3),
+*pkgexec_backend*(3),
 *pkgexec_semantics*(7)

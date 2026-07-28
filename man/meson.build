@@ -7,6 +7,7 @@ if scdoc.found()
     ['pkgexec_request.3.scd', 'pkgexec_request.3', 'man3'],
     ['pkgexec_result.3.scd', 'pkgexec_result.3', 'man3'],
     ['pkgexec_backend.3.scd', 'pkgexec_backend.3', 'man3'],
+    ['pkgexec_control.3.scd', 'pkgexec_control.3', 'man3'],
     ['pkgexec_semantics.7.scd', 'pkgexec_semantics.7', 'man7'],
   ]
   foreach page : pages

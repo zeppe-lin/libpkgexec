@@ -6,11 +6,12 @@ It seals how one exact `libpkgsource` program is to be executed and retains
 what an execution backend actually established and observed. The core library
 contains no process syscalls and no Linux-specific executor.
 
-The public contract separates three things that must not be collapsed:
+The public contract separates four things that must not be collapsed:
 
 1. an immutable semantic execution request;
 2. call-scoped concrete resources supplied to a backend;
-3. immutable execution evidence returned by that backend.
+3. request-bound operational cancellation control;
+4. immutable execution evidence returned by that backend.
 
 A zero process exit is not sufficient for success. Successful evidence also
 requires the exact interpreter, every requested guarantee, complete requested
@@ -25,6 +26,8 @@ The v1 core owns:
 - a closed process environment;
 - exact numeric credentials;
 - resource limits and cancellation policy;
+- monotonic call-scoped cancellation sources and tokens;
+- controlled backend dispatch for cancellation-enabled requests;
 - backend capability profiles;
 - started and not-started failure evidence;
 - output content identities and optional retained material;

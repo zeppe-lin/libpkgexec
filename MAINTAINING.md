@@ -6,6 +6,8 @@
 - Concrete host paths never enter semantic identities.
 - The process environment is closed and explicit.
 - Unsupported guarantees are refused before process start.
+- Cancellation control is request-bound, monotonic, and absent from identities.
+- Enabled cancellation never enters a controlled backend through the ordinary path.
 - Success requires all requested guarantees and verified cleanup.
 - Diagnostic observations do not silently become semantic identity material.
 - The core remains free of process syscalls and Linux isolation mechanisms.
