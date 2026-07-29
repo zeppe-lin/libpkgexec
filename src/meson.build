@@ -47,7 +47,7 @@ pkgconf.generate(
   filebase: 'libpkgexec',
   description: 'Native sealed program-execution authority',
   subdirs: '.',
-  requires: ['libpkgsource >= 1.1.0'],
+  requires: ['libpkgsource >= 2.0.0'],
   requires_private: ['libcrypto'],
   libraries_private: ['-pthread'],
 )

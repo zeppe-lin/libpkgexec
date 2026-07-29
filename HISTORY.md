@@ -1,5 +1,16 @@
 # History
 
+## libpkgexec 1.3.0
+
+Dependency-closure migration release.
+
+- Rebuilt the unchanged execution ABI against `libpkgsource 2.0.0`.
+- Raised the build-time and pkg-config source floors to 2.0.0 so execution
+  adapters cannot reintroduce `libpkgsource.so.1` into a generation-2 process.
+- Kept `libpkgexec.so.1`: the public `program`, identity, request, resource,
+  control, and result layouts are unchanged.
+- Preserved all execution identity domains and backend semantics.
+
 ## libpkgexec 1.2.0
 
 Resource-limit capability refinement release.

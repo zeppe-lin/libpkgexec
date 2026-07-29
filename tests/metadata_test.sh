@@ -18,7 +18,7 @@ fail()
 grep -Eq '^Name:[[:space:]]+libpkgexec$' "$pc" || fail 'wrong module name'
 grep -Eq '^Version:[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+$' "$pc" || fail 'missing version'
 grep -Eq '^Libs:.*-lpkgexec([[:space:]]|$)' "$pc" || fail 'missing execution library'
-grep -Eq '(^|[[:space:],])libpkgsource[[:space:]]*>=[[:space:]]*1\.1\.0([[:space:],]|$)' "$pc" ||
+grep -Eq '(^|[[:space:],])libpkgsource[[:space:]]*>=[[:space:]]*2\.0\.0([[:space:],]|$)' "$pc" ||
   fail 'missing exact source authority floor'
 
 grep -Eq '^Libs.private:.*-pthread([[:space:]]|$)' "$pc" ||

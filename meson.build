@@ -3,7 +3,7 @@
 project(
   'libpkgexec',
   'cpp',
-  version: '1.2.0',
+  version: '1.3.0',
   license: 'GPL-3.0-or-later',
   meson_version: '>=1.2.0',
   default_options: [
@@ -27,7 +27,7 @@ libcrypto_dep = dependency('libcrypto', required: true, static: want_static)
 threads_dep = dependency('threads')
 libpkgsource_dep = dependency(
   'libpkgsource',
-  version: '>=1.1.0',
+  version: '>=2.0.0',
   required: true,
   static: want_static,
   fallback: ['libpkgsource', 'libpkgsource_dep'],

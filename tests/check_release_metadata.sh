@@ -14,10 +14,10 @@ grep -q "## libpkgexec $version" "$root/HISTORY.md" || {
 }
 case "$version" in
   0.1.0) grep -q "soversion: '0'" "$root/src/meson.build" ;;
-  1.0.0|1.1.0|1.2.0) grep -q "soversion: '1'" "$root/src/meson.build" ;;
+  1.0.0|1.1.0|1.2.0|1.3.0) grep -q "soversion: '1'" "$root/src/meson.build" ;;
   *) echo "release-metadata: unexpected project version $version" >&2; exit 1 ;;
 esac
-grep -q "libpkgsource >= 1.1.0" "$root/src/meson.build" || {
+grep -q "libpkgsource >= 2.0.0" "$root/src/meson.build" || {
   echo 'release-metadata: pkg-config source authority floor missing' >&2
   exit 1
 }
