@@ -9,3 +9,4 @@
 #include <libpkgexec/model.h>
 #include <libpkgexec/request.h>
 #include <libpkgexec/result.h>
+#include <libpkgexec/result_codec.h>

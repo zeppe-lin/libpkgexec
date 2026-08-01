@@ -26,6 +26,8 @@ enum class error_code {
   identity_failed,
   invalid_control,
   control_mismatch,
+  corrupt_encoding,
+  authority_mismatch,
 };
 
 class error : public std::runtime_error {

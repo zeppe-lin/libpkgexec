@@ -14,6 +14,7 @@ libpkgexec = library(
     'model.cpp',
     'request.cpp',
     'result.cpp',
+    'result_codec.cpp',
   ],
   include_directories: [public_inc, private_inc],
   dependencies: [libcrypto_dep, libpkgsource_dep, threads_dep],
@@ -38,6 +39,7 @@ install_headers(
   '../include/libpkgexec/model.h',
   '../include/libpkgexec/request.h',
   '../include/libpkgexec/result.h',
+  '../include/libpkgexec/result_codec.h',
   subdir: 'libpkgexec',
 )
 
