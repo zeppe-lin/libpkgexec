@@ -1,17 +1,20 @@
 # SPDX-FileCopyrightText: 2026 Alexandr Savca
 # SPDX-License-Identifier: GPL-3.0-or-later
 if get_option('tests').enabled()
-  foreach test_name : [
-    'identity',
-    'model',
-    'request',
-    'result',
-    'backend',
-    'control',
+  foreach test_spec : [
+    ['identity', 'identity_test.cpp'],
+    ['model', 'model_test.cpp'],
+    ['request', 'request_test.cpp'],
+    ['result', 'result_test.cpp'],
+    ['result-codec', 'result_codec_test.cpp'],
+    ['backend', 'backend_test.cpp'],
+    ['control', 'control_test.cpp'],
   ]
+    test_name = test_spec[0]
+    test_source = test_spec[1]
     test_binary = executable(
       test_name + '-test',
-      test_name + '_test.cpp',
+      test_source,
       include_directories: include_directories('.'),
       dependencies: libpkgexec_dep,
       install: false,
