@@ -14,6 +14,10 @@ The model tests cover:
 - exact resource-limit termination attribution;
 - backend capability support;
 - successful execution evidence;
+- canonical execution-result encoding for every success, failure, and
+  cancellation shape;
+- checksum, truncation, size, noncanonical-shape, evidence-identity, and exact
+  request/backend authority rejection;
 - pre-start and started failure taxonomy;
 - output capture and cleanup invariants;
 - exact call-scoped resource admission;

@@ -35,5 +35,5 @@ not execution identity material.
 # SEE ALSO
 
 *libpkgexec*(3), *pkgexec_request*(3), *pkgexec_control*(3),
-*pkgexec_backend*(3),
+*pkgexec_backend*(3), *pkgexec_result_codec*(3),
 *pkgexec_semantics*(7)

@@ -11,6 +11,8 @@
 - Enabled cancellation never enters a controlled backend through the ordinary path.
 - Success requires all requested guarantees and verified cleanup.
 - Diagnostic observations do not silently become semantic identity material.
+- Result records never reconstruct requests or backend profiles from identities.
+- Durable result decoding verifies checksum before authority and semantic admission.
 - The core remains free of process syscalls and Linux isolation mechanisms.
 - Build, lifecycle, apply, state, transaction, and controller semantics remain
   outside this repository.

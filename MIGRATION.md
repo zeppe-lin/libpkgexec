@@ -1,5 +1,24 @@
 # Migration
 
+## From 1.3 to 1.4
+
+The execution request, backend, result, cancellation, and identity APIs remain
+compatible. `libpkgexec.so.1` is unchanged.
+
+Callers that need durable subordinate execution evidence may now use
+`encode_execution_result()` and `decode_execution_result()`. The encoding is
+not a self-contained execution session: decoding requires the exact original
+`execution_request` and `backend_capability_profile`. Do not replace those
+values with objects inferred from the identities stored in the record.
+
+Treat `corrupt_encoding` as record-integrity or semantic-shape failure. Treat
+`authority_mismatch` as selection of the wrong request or backend authority.
+Neither error authorizes retrying execution or accepting partial evidence.
+
+The codec preserves diagnostic text and retained stream material, but these
+remain outside execution-evidence identity. The record checksum, not the
+semantic identity, detects changes to those fields.
+
 ## From 1.1 to 1.2
 
 Resource-limit support is now profiled by exact kind. A request with any limit

@@ -1,5 +1,23 @@
 # History
 
+## libpkgexec 1.4.0
+
+Durable execution-evidence codec release.
+
+- Added a canonical endian-stable encoding for one sealed execution result.
+- Bound every record to exact caller-supplied request and backend-profile
+  identities instead of serializing or reconstructing those semantic bodies.
+- Covered diagnostic text and optional retained stream material with a record
+  checksum while preserving their existing semantic-identity rules.
+- Reconstructed all result shapes through the public invariant-enforcing
+  factories, including request-bound cancellation evidence.
+- Recomputed evidence identity and required byte-for-byte canonical
+  re-encoding after decode.
+- Added hard size and field bounds, corruption diagnostics, and distinct
+  request/backend authority-mismatch diagnostics.
+- Kept execution request, result, backend, cancellation, and identity domains
+  unchanged and retained `libpkgexec.so.1`.
+
 ## libpkgexec 1.3.0
 
 Dependency-closure migration release.

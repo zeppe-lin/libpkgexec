@@ -32,7 +32,9 @@ The v1 core owns:
 - backend capability profiles;
 - started and not-started failure evidence;
 - output content identities and optional retained material;
-- domain-separated request and evidence identities.
+- domain-separated request and evidence identities;
+- canonical bounded encoding of execution-owned result evidence under exact
+  caller-supplied request and backend authorities.
 
 It does not own:
 

@@ -100,6 +100,26 @@ resource limits, cancellation, log capture, and cleanup.
 Cleanup failure is failure even after exit status zero. Diagnostic text is
 retained but excluded from semantic identity.
 
+## Durable result evidence
+
+The result codec is deliberately qualified rather than self-contained. It
+retains only evidence owned by `libpkgexec` and records the identities of the
+semantic request and backend profile. Decoding requires those complete values
+from their owning authority and rejects substitutes before reconstructing a
+result.
+
+The wire record is endian-stable, versioned, bounded, and checksummed. The
+checksum covers diagnostic text and retained stream material even though those
+observations remain outside semantic execution identity. After checksum and
+authority admission, decoding uses the ordinary result factories, recomputes
+the execution-evidence identity, and requires canonical re-encoding.
+
+This avoids two invalid abstractions: duplicating the complete execution
+request schema inside a result record, and treating request or backend
+identities as sufficient material to recreate their semantic bodies. Higher
+layers that persist construction, check, or lifecycle evidence must retain or
+rehydrate those authorities independently.
+
 ## Backend boundary
 
 `execution_backend` is abstract. Its original two-argument surface remains the
