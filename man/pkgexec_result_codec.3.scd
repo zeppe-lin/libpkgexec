@@ -8,12 +8,12 @@ pkgexec_result_codec - durable native execution-result evidence encoding
 
 *#include <libpkgexec/result_codec.h>*
 
-*execution_result_encoding encode_execution_result(*
+*execution_result_encoding encode_execution_result(* \
     *const execution_result& result);*
 
-*execution_result decode_execution_result(*
-    *const execution_result_encoding& encoding,*
-    *execution_request request,*
+*execution_result decode_execution_result(* \
+    *const execution_result_encoding& encoding,* \
+    *execution_request request,* \
     *backend_capability_profile backend);*
 
 # DESCRIPTION
