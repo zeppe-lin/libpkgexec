@@ -9,7 +9,8 @@
 - Resource-limit support is advertised and retained by exact requested kind.
 - Cancellation control is request-bound, monotonic, and absent from identities.
 - Enabled cancellation never enters a controlled backend through the ordinary path.
-- Success requires all requested guarantees and verified cleanup.
+- Result evidence may retain only guarantees present in the sealed request.
+- Success requires exactly the requested guarantees and verified cleanup.
 - Diagnostic observations do not silently become semantic identity material.
 - Result records never reconstruct requests or backend profiles from identities.
 - Durable result decoding verifies checksum before authority and semantic admission.

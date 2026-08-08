@@ -83,12 +83,16 @@ request with an address-space limit, for example, requires both
 `resource_limits` and `address_space_limit`. This keeps capability admission
 truthful when one backend can realize only a subset of the native limit model.
 
-Evidence retains the guarantees actually established. Success requires all
-requested guarantees. Limit evidence may contain only kinds present in the
-sealed request; applying an undeclared limit is not a stronger guarantee but a
-different execution contract. Resource-limit termination evidence must name a
-requested limit whose exact guarantee was established. A process may fail after
-valid isolation was established; that distinction remains visible.
+Evidence retains the guarantees actually established, and every established
+guarantee must belong to the sealed request. A backend capability profile may
+advertise a wider capability set, but one execution result must not claim a
+stricter or otherwise different execution policy than the caller requested.
+Success therefore establishes exactly the requested guarantee set. Resource
+limits remain exact by kind: applying an undeclared limit is not a stronger
+guarantee but a different execution contract. Resource-limit termination
+evidence must name a requested limit whose exact guarantee was established. A
+process may fail after valid isolation was established; that distinction remains
+visible.
 
 ## Result domains
 

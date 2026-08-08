@@ -151,6 +151,16 @@ int main()
           no_limits, extra_limit_profile, no_limits.interpreter(),
           output, error_output, unrequested_limit_evidence));
 
+  const auto uncontrolled = fixture::uncontrolled_request();
+  auto extra_control_guarantees = uncontrolled.required_guarantees();
+  extra_control_guarantees.push_back(execution_guarantee::cancellation);
+  const auto extra_control_profile = backend_capability_profile::seal(
+      fixture::backend("extra-control"), extra_control_guarantees);
+  TEST_EXEC_THROWS(error_code::inconsistent_result,
+      execution_result::succeeded(
+          uncontrolled, extra_control_profile, uncontrolled.interpreter(),
+          output, error_output, extra_control_guarantees));
+
   auto cancellation = cancellation_source::for_request(request);
   const auto token = cancellation.token();
   TEST_EXEC_THROWS(error_code::invalid_control,

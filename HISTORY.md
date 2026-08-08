@@ -4,6 +4,9 @@
 
 Durable execution-evidence codec release.
 
+- Confined established execution guarantees to the exact sealed request; a
+  wider backend capability profile no longer permits one result to claim an
+  unrequested execution policy.
 - Added a canonical endian-stable encoding for one sealed execution result.
 - Bound every record to exact caller-supplied request and backend-profile
   identities instead of serializing or reconstructing those semantic bodies.

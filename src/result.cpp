@@ -116,17 +116,13 @@ void require_limit_guarantee_shape(
   }
 }
 
-void require_requested_limit_guarantees(
+void require_requested_guarantees(
     const std::vector<execution_guarantee>& established,
     const execution_request& request)
 {
-  for (const auto guarantee : established) {
-    if ((guarantee == execution_guarantee::resource_limits ||
-         kind_specific_limit_guarantee(guarantee)) &&
-        !has_guarantee(request.required_guarantees(), guarantee)) {
-      throw error(error_code::inconsistent_result,
-                  "execution result claims an unrequested resource limit");
-    }
+  if (!includes(request.required_guarantees(), established)) {
+    throw error(error_code::inconsistent_result,
+                "execution result claims a guarantee absent from the sealed request");
   }
 }
 
@@ -361,7 +357,7 @@ execution_result execution_result::failed_before_start(
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");
-  require_requested_limit_guarantees(established_guarantees, request);
+  require_requested_guarantees(established_guarantees, request);
   require_subset(established_guarantees, backend);
   if (std::any_of(established_guarantees.begin(), established_guarantees.end(),
                   [](execution_guarantee value) {
@@ -399,7 +395,7 @@ execution_result execution_result::cancelled_before_start(
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");
-  require_requested_limit_guarantees(established_guarantees, request);
+  require_requested_guarantees(established_guarantees, request);
   require_subset(established_guarantees, backend);
   if (!backend.supports(request)) {
     throw error(error_code::unsupported_request,
@@ -443,7 +439,7 @@ execution_result execution_result::succeeded(
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");
-  require_requested_limit_guarantees(established_guarantees, request);
+  require_requested_guarantees(established_guarantees, request);
   if (!backend.supports(request) ||
       !includes(established_guarantees, request.required_guarantees())) {
     throw error(error_code::unsupported_request,
@@ -537,7 +533,7 @@ execution_result execution_result::failed_after_start_impl(
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");
-  require_requested_limit_guarantees(established_guarantees, request);
+  require_requested_guarantees(established_guarantees, request);
   require_subset(established_guarantees, backend);
   if (!backend.supports(request)) {
     throw error(error_code::unsupported_request,

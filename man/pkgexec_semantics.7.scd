@@ -43,7 +43,8 @@ A limit value is request identity. Every non-empty limit policy requires the
 aggregate *resource_limits* guarantee and an exact guarantee for each populated
 kind. Capability profiles describe only the kinds a backend can establish. The
 aggregate guarantee and at least one exact kind always occur together. Evidence
-may retain only limit kinds present in the request.
+may retain only guarantees present in the request; limit evidence is additionally
+exact by populated kind.
 
 Resource-limit termination is exact evidence, not an interpretation of generic
 program failure. The named limit must occur in the request and its exact

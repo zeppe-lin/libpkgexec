@@ -14,8 +14,9 @@ The public contract separates four things that must not be collapsed:
 4. immutable execution evidence returned by that backend.
 
 A zero process exit is not sufficient for success. Successful evidence also
-requires the exact interpreter, every requested guarantee, complete requested
-stream captures, and verified cleanup.
+requires the exact interpreter, exactly the requested guarantee set, complete
+requested stream captures, and verified cleanup. Backend capabilities may be
+wider than one request; result evidence may not be.
 
 ## Scope
 

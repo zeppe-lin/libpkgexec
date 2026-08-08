@@ -55,7 +55,7 @@ grep -q 'guarantee_for(\*termination.limit())' "$root/src/result.cpp" || {
   echo 'authority-contract: limit termination lacks exact guarantee admission' >&2
   exit 1
 }
-grep -q 'execution result claims an unrequested resource limit' "$root/src/result.cpp" || {
-  echo 'authority-contract: result limits are not confined to the request' >&2
+grep -q 'execution result claims a guarantee absent from the sealed request' "$root/src/result.cpp" || {
+  echo 'authority-contract: result evidence is not confined to the sealed request' >&2
   exit 1
 }
