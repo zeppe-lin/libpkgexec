@@ -1,66 +1,105 @@
 # SPDX-FileCopyrightText: 2026 Alexandr Savca
 # SPDX-License-Identifier: GPL-3.0-or-later
 if get_option('tests').enabled()
-  foreach test_spec : [
-    ['identity', 'identity_test.cpp'],
-    ['model', 'model_test.cpp'],
-    ['request', 'request_test.cpp'],
-    ['result', 'result_test.cpp'],
-    ['result-codec', 'result_codec_test.cpp'],
-    ['backend', 'backend_test.cpp'],
-    ['control', 'control_test.cpp'],
+  foreach case : [
+    ['identity', 'unit/identity_test.cpp'],
+    ['purpose-path', 'unit/purpose_path_test.cpp'],
+    ['resource-model', 'unit/resource_model_test.cpp'],
+    ['environment', 'unit/environment_test.cpp'],
+    ['credential-limits', 'unit/credential_limits_test.cpp'],
+    ['control', 'unit/control_test.cpp'],
+    ['capability-profile', 'unit/capability_profile_test.cpp'],
   ]
-    test_name = test_spec[0]
-    test_source = test_spec[1]
-    test_binary = executable(
-      test_name + '-test',
-      test_source,
-      include_directories: include_directories('.'),
+    target = executable(
+      case[0] + '-test',
+      case[1],
       dependencies: libpkgexec_dep,
       install: false,
     )
-    test(test_name, test_binary)
+    test(case[0], target, suite: 'unit')
   endforeach
 
-  public_headers = executable(
-    'public-headers',
-    'public_headers.cpp',
+  foreach case : [
+    ['request-sealing', 'integration/request_sealing_test.cpp'],
+    ['resource-admission', 'integration/resource_admission_test.cpp'],
+    ['backend-dispatch', 'integration/backend_dispatch_test.cpp'],
+    ['result-success', 'integration/result_success_test.cpp'],
+    ['result-prestart', 'integration/result_prestart_test.cpp'],
+    ['result-started', 'integration/result_started_test.cpp'],
+    ['result-cancellation', 'integration/result_cancellation_test.cpp'],
+    ['result-guarantee-exactness', 'integration/result_guarantee_exactness_test.cpp'],
+  ]
+    target = executable(
+      case[0] + '-test',
+      case[1],
+      dependencies: libpkgexec_dep,
+      install: false,
+    )
+    test(case[0], target, suite: 'integration')
+  endforeach
+
+  foreach case : [
+    ['result-codec-roundtrip', 'protocol/result_codec_roundtrip_test.cpp'],
+    ['result-codec-corruption', 'protocol/result_codec_corruption_test.cpp'],
+  ]
+    target = executable(
+      case[0] + '-test',
+      case[1],
+      dependencies: libpkgexec_dep,
+      install: false,
+    )
+    test(case[0], target, suite: 'protocol')
+  endforeach
+
+  exec_headers = [
+    'backend.h',
+    'control.h',
+    'error.h',
+    'identity.h',
+    'model.h',
+    'request.h',
+    'result.h',
+    'result_codec.h',
+  ]
+  foreach header : exec_headers
+    target = executable(
+      'public-header-' + header.underscorify(),
+      'header/public_header_test.cpp',
+      cpp_args: ['-DPKGEXEC_TEST_HEADER="libpkgexec/' + header + '"'],
+      dependencies: libpkgexec_dep,
+      install: false,
+    )
+    test('public-header-' + header, target, suite: 'header')
+  endforeach
+  umbrella = executable(
+    'umbrella-header-test',
+    'header/umbrella_header_test.cpp',
     dependencies: libpkgexec_dep,
     install: false,
   )
-  test('public-headers', public_headers)
+  test('umbrella-header', umbrella, suite: 'header')
 
   sh = find_program('sh')
-  test(
-    'metadata',
-    sh,
-    args: [
-      join_paths(meson.current_source_dir(), 'metadata_test.sh'),
-      meson.project_build_root(),
-    ],
-  )
-  test(
-    'release-metadata',
-    sh,
-    args: [
-      join_paths(meson.current_source_dir(), 'check_release_metadata.sh'),
-      meson.project_source_root(),
-    ],
-  )
-  test(
-    'authority-contract',
-    sh,
-    args: [
-      join_paths(meson.current_source_dir(), 'check_authority_contract.sh'),
-      meson.project_source_root(),
-    ],
-  )
-  test(
-    'result-codec-contract',
-    sh,
-    args: [
-      join_paths(meson.current_source_dir(), 'check_result_codec_contract.sh'),
-      meson.project_source_root(),
-    ],
-  )
+  foreach contract : [
+    'pkgconfig_metadata',
+    'release_metadata',
+    'authority_contract',
+    'result_codec_contract',
+    'test_layout',
+  ]
+    script = join_paths(
+      meson.current_source_dir(),
+      'contracts/check_' + contract + '.sh',
+    )
+    args = [meson.project_source_root()]
+    if contract == 'pkgconfig_metadata'
+      args = [meson.project_build_root()]
+    endif
+    test(
+      contract.replace('_', '-'),
+      sh,
+      args: [script] + args,
+      suite: 'contract',
+    )
+  endforeach
 endif

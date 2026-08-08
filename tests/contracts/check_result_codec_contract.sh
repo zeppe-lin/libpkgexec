@@ -5,7 +5,8 @@ set -eu
 root=${1:?source root required}
 header=$root/include/libpkgexec/result_codec.h
 source=$root/src/result_codec.cpp
-test_source=$root/tests/result_codec_test.cpp
+round_trip_test=$root/tests/protocol/result_codec_roundtrip_test.cpp
+corruption_test=$root/tests/protocol/result_codec_corruption_test.cpp
 
 for token in \
   'execution_result_encoding_version = 1' \
@@ -52,15 +53,23 @@ fi
 
 for token in \
   'round_trip(success)' \
-  'round_trip(cancelled_before)' \
-  'round_trip(cancelled_after)' \
-  'round_trip(log_failure)' \
-  'round_trip(cleanup_failure)' \
-  'error_code::corrupt_encoding' \
-  'error_code::authority_mismatch'
+  'execution_result::cancelled_before_start' \
+  'execution_result::cancelled_after_start' \
+  'execution_failure_kind::log_capture_failed' \
+  'execution_failure_kind::cleanup_failed'
 do
-  grep -q "$token" "$test_source" || {
-    echo "result-codec-contract: missing test token: $token" >&2
+  grep -q "$token" "$round_trip_test" || {
+    echo "result-codec-contract: missing round-trip test token: $token" >&2
+    exit 1
+  }
+done
+for token in \
+  'error_code::corrupt_encoding' \
+  'error_code::authority_mismatch' \
+  'refresh_checksum'
+do
+  grep -q "$token" "$corruption_test" || {
+    echo "result-codec-contract: missing corruption test token: $token" >&2
     exit 1
   }
 done

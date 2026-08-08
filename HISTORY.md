@@ -4,6 +4,9 @@
 
 Durable execution-evidence codec release.
 
+- Separated qualification into unit, integration, protocol, header, and
+  contract suites with focused source/request, resource, backend, result, and
+  codec scenarios.
 - Confined established execution guarantees to the exact sealed request; a
   wider backend capability profile no longer permits one result to claim an
   unrequested execution policy.

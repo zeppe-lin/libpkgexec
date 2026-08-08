@@ -26,7 +26,7 @@ Migration belongs in external adapters.
 
 ## Release checklist
 
-1. Run shared and static Meson suites.
+1. Run `unit`, `integration`, `protocol`, `header`, and `contract` suites in both shared and static builds.
 2. Compile every public header standalone.
 3. Run GCC and Clang warnings-as-errors checks.
 4. Run ASan and UBSan tests.

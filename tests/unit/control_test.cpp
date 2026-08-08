@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Alexandr Savca
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "fixture.h"
-#include "test.h"
+#include "../fixtures/execution.h"
+#include "../support/test.h"
 
 #include <libpkgexec/libpkgexec.h>
 
@@ -52,11 +52,9 @@ int main()
   TEST_CHECK(source.request_cancellation());
   TEST_CHECK(!source.request_cancellation());
   waiter.join();
-
   TEST_CHECK(observed.load(std::memory_order_acquire));
   TEST_CHECK(source.cancellation_requested());
   TEST_CHECK(token.cancellation_requested());
   TEST_CHECK(copied.wait_for(0ms));
-
   return EXIT_SUCCESS;
 }

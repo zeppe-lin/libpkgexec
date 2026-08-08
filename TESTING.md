@@ -1,33 +1,47 @@
 # Testing
 
-The model tests cover:
+The test tree separates evidence by role:
 
-- identity validation and domain separation;
-- canonical logical paths and resource slots;
-- deterministic resource-layout and environment sealing;
-- duplicate resource, mount, variable, and credential rejection;
-- typed build, check, and lifecycle purposes;
-- exact request sensitivity to program, purpose, interpreter, and policy;
-- aggregate and exact per-kind resource-limit guarantee derivation;
-- partial backend resource-limit capability support;
-- malformed and unrequested resource-limit profile and result rejection;
-- exact resource-limit termination attribution;
-- backend capability support;
-- successful execution evidence;
-- canonical execution-result encoding for every success, failure, and
-  cancellation shape;
-- checksum, truncation, size, noncanonical-shape, evidence-identity, and exact
-  request/backend authority rejection;
-- pre-start and started failure taxonomy;
-- output capture and cleanup invariants;
-- exact call-scoped resource admission;
-- request-bound cancellation source and token admission;
-- monotonic, idempotent, concurrently observable cancellation;
-- controlled versus uncontrolled backend dispatch;
-- not-started and started cancellation evidence;
-- the abstract backend contract through a fake backend;
-- standalone public-header compilation;
-- pkg-config, release, and authority-boundary contracts.
+- `unit` pins atomic execution values, identity domains, resource/environment
+  normalization, credentials, limits, cancellation state, and backend capability
+  profiles without dispatching a backend;
+- `integration` composes the real `libpkgsource` program authority with sealed
+  execution requests, call-scoped resource admission, backend dispatch, and
+  execution-result factories;
+- `protocol` qualifies canonical durable execution-result bytes independently
+  from ordinary semantic-result tests;
+- `header` compiles every public header and the umbrella independently; and
+- `contract` checks pkg-config, release, authority, codec, and test-layout
+  invariants.
+
+`tests/fixtures/execution.h` constructs valid deterministic source/execution
+fiction through public APIs. Query/assertion helpers live under `tests/support/`;
+backend doubles stay local to the integration tests that exercise them.
+
+The unit suite includes `unit/resource_model_test.cpp` and
+`unit/control_test.cpp`. It covers all public identity types, purpose and path
+vocabulary, resource slot/access/layout normalization, closed environment
+validation, credential and limit normalization, process termination and stream
+capture values, monotonic request-bound cancellation, and capability-profile
+normalization.
+
+The integration suite includes `integration/request_sealing_test.cpp`,
+`integration/resource_admission_test.cpp`, and
+`integration/result_guarantee_exactness_test.cpp`. It proves request sensitivity
+to the real source-owned program and execution policy, exact concrete-resource
+admission, controlled versus uncontrolled backend dispatch, every pre-start and
+started failure family, cancellation evidence, and the invariant that result
+evidence may retain only guarantees present in the sealed request. A backend
+profile may advertise additional capabilities; one result may not claim a
+stricter or otherwise different execution contract.
+
+The protocol suite separates canonical semantic round trips in
+`protocol/result_codec_roundtrip_test.cpp` from corruption and authority attacks
+in `protocol/result_codec_corruption_test.cpp`. It covers success, digest-only
+captures, unsupported backend evidence, cancellation before and after start,
+nonzero exit, signal termination, resource limits, capture failure, cleanup
+failure, checksum damage, truncation, magic/version/shape/evidence corruption,
+size bounds, and exact request/backend authority mismatch.
 
 Run the native suite with:
 
@@ -37,6 +51,16 @@ meson setup --wipe build \
   -Dlink_mode=shared
 meson compile -C build
 meson test -C build --print-errorlogs
+```
+
+Role-specific qualification is available with:
+
+```sh
+meson test -C build --suite unit --print-errorlogs
+meson test -C build --suite integration --print-errorlogs
+meson test -C build --suite protocol --print-errorlogs
+meson test -C build --suite header --print-errorlogs
+meson test -C build --suite contract --print-errorlogs
 ```
 
 Static qualification requires a separate build:
@@ -49,6 +73,6 @@ meson compile -C build-static
 meson test -C build-static --print-errorlogs
 ```
 
-A production Linux executor is intentionally absent from v1. Tests do not claim
-namespace, Landlock, cgroup, network, credential, or process-supervision
-coverage.
+A production Linux executor is intentionally absent from the core. Namespace,
+mount, network, credential-transition, pidfd, signal, cgroup, and process
+supervision mechanisms are qualified by `libpkgexec-linux`, not simulated here.
