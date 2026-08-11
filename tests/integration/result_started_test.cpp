@@ -95,5 +95,16 @@ int main()
           request, profile, request.interpreter(), process_termination::exited(1),
           output, error_output, request.required_guarantees(),
           cleanup_outcome::verified, execution_failure_kind::request_rejected));
+  TEST_EXEC_THROWS(error_code::invalid_failure,
+      execution_result::failed_after_start(
+          request, profile, request.interpreter(), process_termination::exited(1),
+          output, error_output, request.required_guarantees(),
+          cleanup_outcome::verified, static_cast<execution_failure_kind>(255)));
+  TEST_EXEC_THROWS(error_code::inconsistent_result,
+      execution_result::failed_after_start(
+          request, profile, request.interpreter(), process_termination::exited(1),
+          output, error_output, request.required_guarantees(),
+          static_cast<cleanup_outcome>(255),
+          execution_failure_kind::program_exited_nonzero));
   return EXIT_SUCCESS;
 }

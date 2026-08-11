@@ -24,6 +24,10 @@ int main()
                    resource_slot::named(resource_role::source_tree, "-bad"));
   TEST_EXEC_THROWS(error_code::invalid_value,
                    resource_slot::named(resource_role::source_tree, "bad/name"));
+  TEST_EXEC_THROWS(error_code::invalid_value,
+      resource_slot::singleton(static_cast<resource_role>(255)));
+  TEST_EXEC_THROWS(error_code::invalid_value,
+      resource_slot::named(static_cast<resource_role>(255), "bad"));
 
   TEST_EXEC_THROWS(error_code::invalid_policy,
       resource_binding(resource_slot::named(resource_role::source_tree, "main"),
@@ -33,6 +37,14 @@ int main()
       resource_binding(resource_slot::singleton(resource_role::build_workspace),
                        fixture::resource("workspace"), resource_access::read_only,
                        logical_path::parse("/build")));
+  TEST_EXEC_THROWS(error_code::invalid_policy,
+      resource_binding(resource_slot::singleton(resource_role::managed_target_root),
+                       fixture::resource("target"),
+                       static_cast<resource_access>(255),
+                       logical_path::parse("/target")));
+  TEST_EXEC_THROWS(error_code::invalid_value,
+      process_termination::resource_limited(
+          static_cast<resource_limit_kind>(255)));
 
   const auto first = fixture::layout(false);
   const auto reordered = fixture::layout(true);

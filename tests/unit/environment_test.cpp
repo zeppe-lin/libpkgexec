@@ -60,6 +60,20 @@ int main()
           0022, std::nullopt, network_policy::denied, stdin_policy::closed,
           stream_policy::capture_complete, stream_policy::capture_complete,
           {environment_variable("FOO", "a"), environment_variable("FOO", "b")}));
+  TEST_EXEC_THROWS(error_code::invalid_policy,
+      environment_policy::hermetic({logical_path::parse("/bin")},
+          logical_path::parse("/home"), logical_path::parse("/tmp"), 1,
+          0022, std::nullopt, static_cast<network_policy>(255)));
+  TEST_EXEC_THROWS(error_code::invalid_policy,
+      environment_policy::hermetic({logical_path::parse("/bin")},
+          logical_path::parse("/home"), logical_path::parse("/tmp"), 1,
+          0022, std::nullopt, network_policy::denied,
+          static_cast<stdin_policy>(255)));
+  TEST_EXEC_THROWS(error_code::invalid_policy,
+      environment_policy::hermetic({logical_path::parse("/bin")},
+          logical_path::parse("/home"), logical_path::parse("/tmp"), 1,
+          0022, std::nullopt, network_policy::denied, stdin_policy::closed,
+          static_cast<stream_policy>(255)));
 
   return EXIT_SUCCESS;
 }

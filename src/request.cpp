@@ -5,6 +5,7 @@
 #include <libpkgexec/error.h>
 
 #include "identity_support.h"
+#include "vocabulary.h"
 
 #include <algorithm>
 #include <set>
@@ -100,6 +101,12 @@ std::vector<execution_guarantee> derive_required_guarantees(
     const cancellation_policy& cancellation,
     std::vector<execution_guarantee> additional)
 {
+  for (const auto guarantee : additional) {
+    if (!detail::valid(guarantee)) {
+      throw error(error_code::invalid_policy,
+                  "unsupported required execution guarantee");
+    }
+  }
   additional.push_back(execution_guarantee::exact_interpreter);
   additional.push_back(execution_guarantee::closed_environment);
   additional.push_back(execution_guarantee::root_view);

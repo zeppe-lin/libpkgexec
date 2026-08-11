@@ -46,6 +46,9 @@ int main()
   TEST_EXEC_THROWS(error_code::invalid_failure,
       execution_result::failed_before_start(
           request, profile, execution_failure_kind::program_exited_nonzero));
+  TEST_EXEC_THROWS(error_code::invalid_failure,
+      execution_result::failed_before_start(
+          request, profile, static_cast<execution_failure_kind>(255)));
   TEST_EXEC_THROWS(error_code::invalid_control,
       execution_result::failed_before_start(
           request, profile, execution_failure_kind::cancelled));

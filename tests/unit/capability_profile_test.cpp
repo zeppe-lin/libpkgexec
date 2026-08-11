@@ -30,6 +30,10 @@ int main()
       backend_capability_profile::seal(
           fixture::backend("aggregate-only-limit-profile"),
           {execution_guarantee::resource_limits}));
+  TEST_EXEC_THROWS(error_code::invalid_capability_profile,
+      backend_capability_profile::seal(
+          fixture::backend("unknown-guarantee-profile"),
+          {static_cast<execution_guarantee>(255)}));
 
   auto weak = request.required_guarantees();
   weak.erase(std::remove(weak.begin(), weak.end(),

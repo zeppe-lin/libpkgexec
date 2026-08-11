@@ -5,6 +5,7 @@
 #include <libpkgexec/error.h>
 
 #include "identity_support.h"
+#include "vocabulary.h"
 
 #include <algorithm>
 #include <utility>
@@ -26,8 +27,16 @@ bool includes(const std::vector<execution_guarantee>& superset,
 }
 
 std::vector<execution_guarantee> normalize_guarantees(
-    std::vector<execution_guarantee> values)
+    std::vector<execution_guarantee> values,
+    error_code code,
+    const char* subject)
 {
+  for (const auto value : values) {
+    if (!detail::valid(value)) {
+      throw error(code, std::string(subject) +
+          " contains an unsupported execution guarantee");
+    }
+  }
   std::sort(values.begin(), values.end());
   values.erase(std::unique(values.begin(), values.end()), values.end());
   return values;
@@ -289,7 +298,8 @@ backend_capability_profile backend_capability_profile::seal(
     backend_identity backend,
     std::vector<execution_guarantee> guarantees)
 {
-  guarantees = normalize_guarantees(std::move(guarantees));
+  guarantees = normalize_guarantees(std::move(guarantees),
+      error_code::invalid_capability_profile, "backend capability profile");
   require_limit_guarantee_shape(
       guarantees, error_code::invalid_capability_profile,
       "backend capability profile");
@@ -345,6 +355,10 @@ execution_result execution_result::failed_before_start(
     std::vector<execution_guarantee> established_guarantees,
     std::string diagnostic)
 {
+  if (!detail::valid(failure)) {
+    throw error(error_code::invalid_failure,
+                "unsupported pre-start execution failure kind");
+  }
   if (failure == execution_failure_kind::cancelled) {
     throw error(error_code::invalid_control,
                 "pre-start cancellation requires call-scoped control evidence");
@@ -353,7 +367,8 @@ execution_result execution_result::failed_before_start(
     throw error(error_code::invalid_failure,
                 "selected failure kind requires a started process");
   }
-  established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  established_guarantees = normalize_guarantees(std::move(established_guarantees),
+      error_code::inconsistent_result, "execution result");
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");
@@ -391,7 +406,8 @@ execution_result execution_result::cancelled_before_start(
     std::string diagnostic)
 {
   require_requested_control(request, cancellation);
-  established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  established_guarantees = normalize_guarantees(std::move(established_guarantees),
+      error_code::inconsistent_result, "execution result");
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");
@@ -435,7 +451,8 @@ execution_result execution_result::succeeded(
     std::vector<execution_guarantee> established_guarantees,
     std::string diagnostic)
 {
-  established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  established_guarantees = normalize_guarantees(std::move(established_guarantees),
+      error_code::inconsistent_result, "execution result");
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");
@@ -517,6 +534,14 @@ execution_result execution_result::failed_after_start_impl(
     bool cancellation_admitted,
     std::string diagnostic)
 {
+  if (!detail::valid(failure)) {
+    throw error(error_code::invalid_failure,
+                "unsupported started execution failure kind");
+  }
+  if (!detail::valid(cleanup)) {
+    throw error(error_code::inconsistent_result,
+                "unsupported cleanup outcome");
+  }
   if (pre_start_failure(failure)) {
     throw error(error_code::invalid_failure,
                 "selected failure kind requires a not-started result");
@@ -529,7 +554,8 @@ execution_result execution_result::failed_after_start_impl(
     throw error(error_code::inconsistent_result,
                 "observed interpreter does not match the sealed request");
   }
-  established_guarantees = normalize_guarantees(std::move(established_guarantees));
+  established_guarantees = normalize_guarantees(std::move(established_guarantees),
+      error_code::inconsistent_result, "execution result");
   require_limit_guarantee_shape(
       established_guarantees, error_code::inconsistent_result,
       "execution result");

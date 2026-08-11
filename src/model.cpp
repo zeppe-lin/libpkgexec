@@ -5,6 +5,7 @@
 #include <libpkgexec/error.h>
 
 #include "identity_support.h"
+#include "vocabulary.h"
 
 #include <algorithm>
 #include <array>
@@ -346,7 +347,13 @@ execution_purpose execution_purpose::build()
 execution_purpose execution_purpose::check()
 { return execution_purpose(execution_purpose_kind::check, std::nullopt); }
 execution_purpose execution_purpose::lifecycle(pkgsource::lifecycle_action action)
-{ return execution_purpose(execution_purpose_kind::lifecycle, action); }
+{
+  if (!detail::valid(action)) {
+    throw error(error_code::invalid_purpose,
+                "unsupported package lifecycle action");
+  }
+  return execution_purpose(execution_purpose_kind::lifecycle, action);
+}
 execution_purpose_kind execution_purpose::kind() const noexcept { return kind_; }
 const std::optional<pkgsource::lifecycle_action>& execution_purpose::action() const noexcept
 { return action_; }
@@ -405,6 +412,10 @@ resource_slot::resource_slot(resource_role role, std::string name)
 }
 resource_slot resource_slot::singleton(resource_role role)
 {
+  if (!detail::valid(role)) {
+    throw error(error_code::invalid_value,
+                "unsupported execution resource role");
+  }
   if (is_named_role(role)) {
     throw error(error_code::invalid_value,
                 "source and package-input resource roles require a canonical name");
@@ -413,6 +424,10 @@ resource_slot resource_slot::singleton(resource_role role)
 }
 resource_slot resource_slot::named(resource_role role, std::string name)
 {
+  if (!detail::valid(role)) {
+    throw error(error_code::invalid_value,
+                "unsupported execution resource role");
+  }
   if (!is_named_role(role)) {
     throw error(error_code::invalid_value,
                 "only source and package-input resource roles may be named");
@@ -448,6 +463,10 @@ resource_binding::resource_binding(resource_slot slot,
     : slot_(std::move(slot)), resource_(std::move(resource)), access_(access),
       mount_point_(std::move(mount_point))
 {
+  if (!detail::valid(access_)) {
+    throw error(error_code::invalid_policy,
+                "unsupported execution resource access policy");
+  }
   const auto role = slot_.role();
   if ((role == resource_role::source_tree ||
        role == resource_role::build_input_tree ||
@@ -607,6 +626,11 @@ environment_policy environment_policy::hermetic(
     stream_policy standard_error,
     std::vector<environment_variable> additional_variables)
 {
+  if (!detail::valid(network) || !detail::valid(standard_input) ||
+      !detail::valid(standard_output) || !detail::valid(standard_error)) {
+    throw error(error_code::invalid_policy,
+                "unsupported execution environment policy vocabulary");
+  }
   if (executable_search_path.empty()) {
     throw error(error_code::invalid_policy,
                 "closed execution PATH cannot be empty");
@@ -840,6 +864,10 @@ process_termination process_termination::cancelled()
 }
 process_termination process_termination::resource_limited(resource_limit_kind limit)
 {
+  if (!detail::valid(limit)) {
+    throw error(error_code::invalid_value,
+                "unsupported resource-limit termination kind");
+  }
   return process_termination(process_termination_kind::resource_limited,
                              std::nullopt, limit);
 }

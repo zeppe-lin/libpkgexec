@@ -128,5 +128,14 @@ int main()
           first.resources(), allowed_network, first.credentials(),
           resource_limits::make(), cancellation_policy::disabled(),
           {execution_guarantee::cancellation}));
+  TEST_EXEC_THROWS(error_code::invalid_purpose,
+      execution_purpose::lifecycle(
+          static_cast<pkgsource::lifecycle_action>(255)));
+  TEST_EXEC_THROWS(error_code::invalid_policy,
+      execution_request::seal(
+          first.program(), first.purpose(), first.interpreter(), first.root_view(),
+          first.resources(), first.environment(), first.credentials(),
+          first.limits(), first.cancellation(),
+          {static_cast<execution_guarantee>(255)}));
   return EXIT_SUCCESS;
 }
