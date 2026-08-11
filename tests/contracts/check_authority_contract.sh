@@ -22,7 +22,7 @@ grep -q 'std::filesystem::path host_path' "$root/include/libpkgexec/backend.h" |
   exit 1
 }
 
-grep -q 'class controlled_execution_backend' "$root/include/libpkgexec/backend.h" || {
+grep -Eq 'class( PKGEXEC_API)? controlled_execution_backend' "$root/include/libpkgexec/backend.h" || {
   echo 'authority-contract: controlled backend boundary missing' >&2
   exit 1
 }
@@ -57,5 +57,24 @@ grep -q 'guarantee_for(\*termination.limit())' "$root/src/result.cpp" || {
 }
 grep -q 'execution result claims a guarantee absent from the sealed request' "$root/src/result.cpp" || {
   echo 'authority-contract: result evidence is not confined to the sealed request' >&2
+  exit 1
+}
+
+for source in model request result; do
+  grep -F '#include "vocabulary.h"' "$root/src/$source.cpp" >/dev/null || {
+    echo "authority-contract: $source admission does not use shared vocabulary validation" >&2
+    exit 1
+  }
+done
+[ "$(grep -Fc 'detail::valid' "$root/src/model.cpp")" -ge 6 ] || {
+  echo 'authority-contract: model vocabulary admissions are incomplete' >&2
+  exit 1
+}
+grep -F 'detail::valid(guarantee)' "$root/src/request.cpp" >/dev/null || {
+  echo 'authority-contract: request guarantee vocabulary is not admitted structurally' >&2
+  exit 1
+}
+[ "$(grep -Fc 'detail::valid' "$root/src/result.cpp")" -ge 3 ] || {
+  echo 'authority-contract: result vocabulary admissions are incomplete' >&2
   exit 1
 }

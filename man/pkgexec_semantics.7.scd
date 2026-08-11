@@ -59,7 +59,7 @@ success without verification.
 
 # EXCLUSIONS
 
-The v1 core contains no Linux executor, namespaces, Landlock, cgroups, process
+The v2 core contains no Linux executor, namespaces, Landlock, cgroups, process
 syscalls, source acquisition, package-input materialization, artifact creation,
 filesystem application, lifecycle policy, state publication, or historical
 compatibility behavior.

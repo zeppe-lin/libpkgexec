@@ -55,6 +55,7 @@ if get_option('tests').enabled()
     'backend.h',
     'control.h',
     'error.h',
+    'export.h',
     'identity.h',
     'model.h',
     'request.h',
@@ -79,13 +80,47 @@ if get_option('tests').enabled()
   )
   test('umbrella-header', umbrella, suite: 'header')
 
+  abi_layout = executable(
+    'abi-layout-test',
+    'contracts/abi_layout_test.cpp',
+    dependencies: libpkgexec_dep,
+    install: false,
+  )
+  test('abi-layout', abi_layout, suite: 'contract')
+
   sh = find_program('sh')
+  if library_kind == 'shared'
+    nm = find_program('nm')
+    test(
+      'abi-surface',
+      sh,
+      args: [
+        meson.current_source_dir() / 'contracts/check_abi_surface.sh',
+        nm.full_path(),
+        libpkgexec.full_path(),
+        meson.project_source_root() / 'abi/libpkgexec.exports',
+      ],
+      suite: 'contract',
+    )
+    test(
+      'dependency-abi',
+      sh,
+      args: [
+        meson.current_source_dir() / 'contracts/check_dependency_abi.sh',
+        libpkgexec.full_path(),
+      ],
+      suite: 'contract',
+    )
+  endif
+
   foreach contract : [
     'pkgconfig_metadata',
     'release_metadata',
     'authority_contract',
     'result_codec_contract',
     'test_layout',
+    'abi_contract',
+    'ci_contract',
   ]
     script = join_paths(
       meson.current_source_dir(),

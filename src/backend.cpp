@@ -10,6 +10,9 @@
 
 namespace pkgexec {
 
+execution_backend::~execution_backend() = default;
+controlled_execution_backend::~controlled_execution_backend() = default;
+
 resource_materialization::resource_materialization(
     resource_identity resource,
     std::filesystem::path host_path)

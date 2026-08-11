@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <chrono>
 #include <memory>
 
@@ -17,7 +19,7 @@ class cancellation_state;
 }
 
 /*! \brief Copyable read-only view of one request-bound cancellation state. */
-class cancellation_token final {
+class PKGEXEC_API cancellation_token final {
 public:
   cancellation_token(const cancellation_token&) noexcept = default;
   cancellation_token& operator=(const cancellation_token&) noexcept = default;
@@ -34,7 +36,7 @@ private:
 };
 
 /*! \brief Unique caller-owned authority for one monotonic cancellation signal. */
-class cancellation_source final {
+class PKGEXEC_API cancellation_source final {
 public:
   [[nodiscard]] static cancellation_source for_request(
       const execution_request& request);
@@ -54,7 +56,7 @@ private:
 };
 
 /*! \brief Validate that a token is the control admitted for this request. */
-void require_cancellation_control(const execution_request& request,
+PKGEXEC_API void require_cancellation_control(const execution_request& request,
                                   const cancellation_token& token);
 
 } // namespace pkgexec

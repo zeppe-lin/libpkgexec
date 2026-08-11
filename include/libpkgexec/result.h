@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <optional>
 #include <string>
 #include <vector>
@@ -14,7 +16,7 @@
 
 namespace pkgexec {
 
-class backend_capability_profile final {
+class PKGEXEC_API backend_capability_profile final {
 public:
   [[nodiscard]] static backend_capability_profile seal(
       backend_identity backend,
@@ -23,9 +25,9 @@ public:
   [[nodiscard]] const std::vector<execution_guarantee>& guarantees() const noexcept;
   [[nodiscard]] bool supports(const execution_request& request) const noexcept;
   [[nodiscard]] const backend_capability_profile_identity& identity() const noexcept;
-  friend bool operator==(const backend_capability_profile& lhs,
+  friend PKGEXEC_API bool operator==(const backend_capability_profile& lhs,
                          const backend_capability_profile& rhs) noexcept;
-  friend bool operator!=(const backend_capability_profile& lhs,
+  friend PKGEXEC_API bool operator!=(const backend_capability_profile& lhs,
                          const backend_capability_profile& rhs) noexcept;
 private:
   backend_capability_profile(backend_identity backend,
@@ -36,7 +38,7 @@ private:
   backend_capability_profile_identity identity_;
 };
 
-class execution_result final {
+class PKGEXEC_API execution_result final {
 public:
   [[nodiscard]] static execution_result failed_before_start(
       execution_request request,
@@ -98,9 +100,9 @@ public:
   [[nodiscard]] const std::string& diagnostic() const noexcept;
   [[nodiscard]] const execution_evidence_identity& identity() const noexcept;
 
-  friend bool operator==(const execution_result& lhs,
+  friend PKGEXEC_API bool operator==(const execution_result& lhs,
                          const execution_result& rhs) noexcept;
-  friend bool operator!=(const execution_result& lhs,
+  friend PKGEXEC_API bool operator!=(const execution_result& lhs,
                          const execution_result& rhs) noexcept;
 private:
   [[nodiscard]] static execution_result failed_after_start_impl(

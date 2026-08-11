@@ -20,7 +20,7 @@ wider than one request; result evidence may not be.
 
 ## Scope
 
-The v1 core owns:
+The v2 core owns:
 
 - build, check, and action-bound lifecycle execution purposes;
 - logical read-only and writable resource layouts;
@@ -63,7 +63,7 @@ select the same mode.
 
 ## Dependency
 
-`libpkgexec 1.4.0` requires `libpkgsource >= 2.0.0` and OpenSSL libcrypto.
+`libpkgexec 2.0.0` requires `libpkgsource >= 3.0.1, < 4.0.0` and OpenSSL libcrypto.
 
 ## License
 

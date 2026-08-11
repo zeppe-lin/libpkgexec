@@ -2,18 +2,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <string>
 
 namespace pkgexec {
 
 #define PKGEXEC_DECLARE_IDENTITY(type_name)                                    \
-class type_name final {                                                        \
+class PKGEXEC_API type_name final {                                                        \
 public:                                                                        \
   [[nodiscard]] static type_name from_sha256(std::string hex);                 \
   [[nodiscard]] const std::string& hex() const noexcept;                       \
-  friend bool operator==(const type_name& lhs, const type_name& rhs) noexcept; \
-  friend bool operator!=(const type_name& lhs, const type_name& rhs) noexcept; \
-  friend bool operator<(const type_name& lhs, const type_name& rhs) noexcept;  \
+  friend PKGEXEC_API bool operator==(const type_name& lhs, const type_name& rhs) noexcept; \
+  friend PKGEXEC_API bool operator!=(const type_name& lhs, const type_name& rhs) noexcept; \
+  friend PKGEXEC_API bool operator<(const type_name& lhs, const type_name& rhs) noexcept;  \
 private:                                                                       \
   explicit type_name(std::string hex);                                         \
   std::string hex_;                                                            \

@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <cstddef>
 #include <cstdint>
 #include <vector>
@@ -27,7 +29,7 @@ using execution_result_encoding = std::vector<std::uint8_t>;
  * The request and backend bodies are not duplicated. Their exact identities
  * are retained in the encoding and must be supplied again during decoding.
  */
-[[nodiscard]] execution_result_encoding encode_execution_result(
+[[nodiscard]] PKGEXEC_API execution_result_encoding encode_execution_result(
     const execution_result& result);
 
 /*! \brief Decode evidence under exact caller-supplied semantic authorities.
@@ -36,7 +38,7 @@ using execution_result_encoding = std::vector<std::uint8_t>;
  * backend profile identities, reconstructs the result through its public
  * invariant-enforcing factories, and verifies the retained evidence identity.
  */
-[[nodiscard]] execution_result decode_execution_result(
+[[nodiscard]] PKGEXEC_API execution_result decode_execution_result(
     const execution_result_encoding& encoding,
     execution_request request,
     backend_capability_profile backend);

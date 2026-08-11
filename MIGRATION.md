@@ -1,5 +1,23 @@
 # Migration
 
+## From 1.4 to 2.0
+
+`libpkgexec 2.0.0` advances the shared ABI to `libpkgexec.so.2`. Rebuild every
+direct execution consumer; do not load `libpkgexec.so.1` and `.so.2` into one
+native toolchain closure. The source dependency is now explicitly bounded to
+`libpkgsource >= 3.0.1, < 4.0.0` and shared qualification requires
+`libpkgsource.so.3`.
+
+The semantic execution model and durable result format are unchanged. The ABI
+change establishes a reviewed compiler-independent public export set instead of
+preserving private constructors and implementation symbols accidentally exported
+by the v1 DSO. Public polymorphic boundaries now have DSO-anchored destructors.
+
+Ordinary factory admission is stricter: unsupported raw enum values for
+execution purposes, resources, environment policy, guarantees, termination,
+failure kinds, and cleanup are rejected rather than entering identities or
+evidence as unknown vocabulary. Valid v1.4 callers require no semantic rewrite.
+
 ## From 1.3 to 1.4
 
 The execution request, backend, result, cancellation, and identity APIs remain
@@ -85,6 +103,5 @@ The following are not valid native authority:
 - successful program exit with unverified cleanup;
 - historical fakeroot or pkgmk execution receipts.
 
-No importer is included. A future compatibility frontend may observe historical
-execution behavior and emit native declarations, but the authoritative library
-will not interpret legacy records.
+No importer is included. Historical execution behavior remains outside the
+native authority boundary.

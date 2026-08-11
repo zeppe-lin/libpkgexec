@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <filesystem>
 #include <vector>
 
@@ -15,7 +17,7 @@
 namespace pkgexec {
 
 /*! \brief Concrete host resource for one semantic request resource. */
-class resource_materialization final {
+class PKGEXEC_API resource_materialization final {
 public:
   resource_materialization(resource_identity resource,
                            std::filesystem::path host_path);
@@ -27,7 +29,7 @@ private:
 };
 
 /*! \brief Exact call-scoped resources admitted against one request. */
-class execution_resources final {
+class PKGEXEC_API execution_resources final {
 public:
   [[nodiscard]] static execution_resources admit(
       const execution_request& request,
@@ -49,9 +51,9 @@ private:
 };
 
 /*! \brief Abstract executor boundary; the core performs no process syscalls. */
-class execution_backend {
+class PKGEXEC_API execution_backend {
 public:
-  virtual ~execution_backend() = default;
+  virtual ~execution_backend();
   [[nodiscard]] virtual backend_capability_profile capabilities() const = 0;
   [[nodiscard]] virtual execution_result execute(
       const execution_request& request,
@@ -64,9 +66,9 @@ public:
  *  cancellation policy is disabled. Enabled cancellation must enter through
  *  the token-bearing overload.
  */
-class controlled_execution_backend : public execution_backend {
+class PKGEXEC_API controlled_execution_backend : public execution_backend {
 public:
-  ~controlled_execution_backend() override = default;
+  ~controlled_execution_backend() override;
 
   [[nodiscard]] execution_result execute(
       const execution_request& request,

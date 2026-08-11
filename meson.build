@@ -3,7 +3,7 @@
 project(
   'libpkgexec',
   'cpp',
-  version: '1.4.0',
+  version: '2.0.0',
   license: 'GPL-3.0-or-later',
   meson_version: '>=1.2.0',
   default_options: [
@@ -23,22 +23,21 @@ if (library_kind == 'static') != want_static
   error('default_library and link_mode must both select shared or static')
 endif
 
+pkgconf = import('pkgconfig')
+cpp = meson.get_compiler('cpp')
+visibility_cpp_args = []
+if cpp.has_argument('-fvisibility-inlines-hidden')
+  visibility_cpp_args += ['-fvisibility-inlines-hidden']
+endif
+
 libcrypto_dep = dependency('libcrypto', required: true, static: want_static)
 threads_dep = dependency('threads')
 libpkgsource_dep = dependency(
   'libpkgsource',
-  version: '>=2.0.0',
+  version: ['>=3.0.1', '<4.0.0'],
   required: true,
   static: want_static,
-  fallback: ['libpkgsource', 'libpkgsource_dep'],
-  default_options: [
-    'default_library=' + library_kind,
-    'link_mode=' + get_option('link_mode'),
-    'planner_adapter=disabled',
-    'yaml_adapter=disabled',
-  ],
 )
-pkgconf = import('pkgconfig')
 
 subdir('src')
 subdir('man')

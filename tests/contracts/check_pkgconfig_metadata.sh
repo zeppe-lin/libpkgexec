@@ -3,23 +3,41 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -eu
 build_root=${1:?build root required}
-pc=$(find "$build_root" -name libpkgexec.pc -type f -print -quit)
-if [ -z "$pc" ]; then
-  echo 'metadata-test: libpkgexec.pc not found' >&2
-  exit 1
-fi
+metadata=$build_root/meson-private/libpkgexec.pc
 fail()
 {
-  echo "metadata-test: $1" >&2
-  echo '--- generated metadata ---' >&2
-  cat "$pc" >&2
+  echo "metadata-test: $*" >&2
+  if [ -n "${metadata:-}" ] && [ -f "$metadata" ]; then
+    echo '--- generated metadata ---' >&2
+    cat "$metadata" >&2
+    echo '--- end generated metadata ---' >&2
+  fi
   exit 1
 }
-grep -Eq '^Name:[[:space:]]+libpkgexec$' "$pc" || fail 'wrong module name'
-grep -Eq '^Version:[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+$' "$pc" || fail 'missing version'
-grep -Eq '^Libs:.*-lpkgexec([[:space:]]|$)' "$pc" || fail 'missing execution library'
-grep -Eq '(^|[[:space:],])libpkgsource[[:space:]]*>=[[:space:]]*2\.0\.0([[:space:],]|$)' "$pc" ||
-  fail 'missing exact source authority floor'
-
-grep -Eq '^Libs.private:.*-pthread([[:space:]]|$)' "$pc" ||
-  fail 'missing static cancellation-control thread closure'
+if [ ! -s "$metadata" ]; then
+  metadata=$(find "$build_root" -type f -name libpkgexec.pc -print | sed -n '1p')
+fi
+[ -n "${metadata:-}" ] && [ -s "$metadata" ] || fail 'generated libpkgexec.pc was not found'
+[ "$(sed -n 's/^Name:[[:space:]]*//p' "$metadata")" = libpkgexec ] || fail 'wrong module name'
+[ "$(sed -n 's/^Version:[[:space:]]*//p' "$metadata")" = 2.0.0 ] || fail 'wrong module version'
+normalize_requirements()
+{
+  sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \
+      -e 's/[[:space:]][[:space:]]*/ /g' \
+      -e 's/ *\([<>]=\|[<>=]\) */ \1 /' -e '/^$/d'
+}
+requires=$(sed -n 's/^Requires:[[:space:]]*//p' "$metadata" | tr ',' '\n' | normalize_requirements)
+expected='libpkgsource >= 3.0.1
+libpkgsource < 4.0.0'
+for requirement in 'libpkgsource >= 3.0.1' 'libpkgsource < 4.0.0'; do
+  count=$(printf '%s\n' "$requires" | grep -Fxc "$requirement" || true)
+  [ "$count" -eq 1 ] || fail "metadata contains $count copies of '$requirement', expected exactly one"
+done
+[ "$(printf '%s\n' "$requires" | LC_ALL=C sort)" = "$(printf '%s\n' "$expected" | LC_ALL=C sort)" ] ||
+  fail 'public requirements are not the exact source-3 interval'
+private=$(sed -n 's/^Requires\.private:[[:space:]]*//p' "$metadata" | tr ',' '\n' | normalize_requirements)
+[ "$private" = libcrypto ] || fail "private requirements are '$private', expected libcrypto"
+libs=$(sed -n 's/^Libs:[[:space:]]*//p' "$metadata")
+printf ' %s \n' "$libs" | grep -F ' -lpkgexec ' >/dev/null || fail 'missing libpkgexec'
+private_libs=$(sed -n 's/^Libs\.private:[[:space:]]*//p' "$metadata")
+printf ' %s \n' "$private_libs" | grep -F ' -pthread ' >/dev/null || fail 'missing static thread closure'

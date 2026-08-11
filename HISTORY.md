@@ -1,5 +1,25 @@
 # History
 
+## libpkgexec 2.0.0
+
+Truthful source-3 and execution-ABI release.
+
+- Refused unsupported raw execution vocabulary at ordinary request, policy,
+  backend-profile, result, cleanup, and termination admission boundaries.
+- Rebuilt the execution authority against `libpkgsource >= 3.0.1, < 4.0.0` and
+  bound shared qualification to `libpkgsource.so.3`.
+- Advanced the SONAME to `libpkgexec.so.2` so the native line can replace the
+  compiler-dependent accidental v1 export set with one reviewed ELF ABI.
+- Froze the reviewed shared ABI to 268 public C++ symbols under both GCC and
+  Clang, excluding private constructors, implementation helpers, and C++
+  standard-library implementation symbols.
+- Anchored the public `error`, `execution_backend`, and
+  `controlled_execution_backend` polymorphic boundaries in the DSO.
+- Added x86-64 carrier-layout qualification, exact ELF dependency checks, an
+  installed shared/static consumer, and hosted GCC/Clang and sanitizer gates.
+- Kept execution identity domains, durable result encoding, cancellation
+  semantics, and the process-mechanism boundary unchanged.
+
 ## libpkgexec 1.4.0
 
 Durable execution-evidence codec release.

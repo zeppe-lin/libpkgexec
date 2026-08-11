@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <stdexcept>
 #include <string>
 
@@ -30,9 +32,10 @@ enum class error_code {
   authority_mismatch,
 };
 
-class error : public std::runtime_error {
+class PKGEXEC_API error : public std::runtime_error {
 public:
   error(error_code code, std::string message);
+  ~error() override;
   [[nodiscard]] error_code code() const noexcept;
 private:
   error_code code_;

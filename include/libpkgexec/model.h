@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <cstdint>
 #include <optional>
 #include <string>
@@ -88,53 +90,53 @@ enum class execution_failure_kind {
   cleanup_failed,
 };
 
-[[nodiscard]] std::string_view to_string(execution_purpose_kind value) noexcept;
-[[nodiscard]] std::string_view to_string(resource_role value) noexcept;
-[[nodiscard]] std::string_view to_string(resource_access value) noexcept;
-[[nodiscard]] std::string_view to_string(locale_policy value) noexcept;
-[[nodiscard]] std::string_view to_string(timezone_policy value) noexcept;
-[[nodiscard]] std::string_view to_string(home_policy value) noexcept;
-[[nodiscard]] std::string_view to_string(network_policy value) noexcept;
-[[nodiscard]] std::string_view to_string(stdin_policy value) noexcept;
-[[nodiscard]] std::string_view to_string(stream_policy value) noexcept;
-[[nodiscard]] std::string_view to_string(cancellation_mode value) noexcept;
-[[nodiscard]] std::string_view to_string(resource_limit_kind value) noexcept;
-[[nodiscard]] std::string_view to_string(execution_guarantee value) noexcept;
-[[nodiscard]] std::string_view to_string(process_termination_kind value) noexcept;
-[[nodiscard]] std::string_view to_string(execution_status value) noexcept;
-[[nodiscard]] std::string_view to_string(execution_start_state value) noexcept;
-[[nodiscard]] std::string_view to_string(cleanup_outcome value) noexcept;
-[[nodiscard]] std::string_view to_string(execution_failure_kind value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(execution_purpose_kind value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(resource_role value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(resource_access value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(locale_policy value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(timezone_policy value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(home_policy value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(network_policy value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(stdin_policy value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(stream_policy value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(cancellation_mode value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(resource_limit_kind value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(execution_guarantee value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(process_termination_kind value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(execution_status value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(execution_start_state value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(cleanup_outcome value) noexcept;
+[[nodiscard]] PKGEXEC_API std::string_view to_string(execution_failure_kind value) noexcept;
 
 /*! \brief Canonical exact-byte SHA-256 value. */
-class sha256_digest final {
+class PKGEXEC_API sha256_digest final {
 public:
   explicit sha256_digest(std::string hex);
   [[nodiscard]] static sha256_digest of_bytes(std::string_view bytes);
   [[nodiscard]] const std::string& hex() const noexcept;
-  friend bool operator==(const sha256_digest& lhs,
+  friend PKGEXEC_API bool operator==(const sha256_digest& lhs,
                          const sha256_digest& rhs) noexcept;
-  friend bool operator!=(const sha256_digest& lhs,
+  friend PKGEXEC_API bool operator!=(const sha256_digest& lhs,
                          const sha256_digest& rhs) noexcept;
-  friend bool operator<(const sha256_digest& lhs,
+  friend PKGEXEC_API bool operator<(const sha256_digest& lhs,
                         const sha256_digest& rhs) noexcept;
 private:
   std::string hex_;
 };
 
 /*! \brief Exact typed execution purpose. */
-class execution_purpose final {
+class PKGEXEC_API execution_purpose final {
 public:
   [[nodiscard]] static execution_purpose build();
   [[nodiscard]] static execution_purpose check();
   [[nodiscard]] static execution_purpose lifecycle(pkgsource::lifecycle_action action);
   [[nodiscard]] execution_purpose_kind kind() const noexcept;
   [[nodiscard]] const std::optional<pkgsource::lifecycle_action>& action() const noexcept;
-  friend bool operator==(const execution_purpose& lhs,
+  friend PKGEXEC_API bool operator==(const execution_purpose& lhs,
                          const execution_purpose& rhs) noexcept;
-  friend bool operator!=(const execution_purpose& lhs,
+  friend PKGEXEC_API bool operator!=(const execution_purpose& lhs,
                          const execution_purpose& rhs) noexcept;
-  friend bool operator<(const execution_purpose& lhs,
+  friend PKGEXEC_API bool operator<(const execution_purpose& lhs,
                         const execution_purpose& rhs) noexcept;
 private:
   execution_purpose(execution_purpose_kind kind,
@@ -144,15 +146,15 @@ private:
 };
 
 /*! \brief Canonical absolute path in the process-visible root. */
-class logical_path final {
+class PKGEXEC_API logical_path final {
 public:
   [[nodiscard]] static logical_path parse(std::string_view value);
   [[nodiscard]] const std::string& string() const noexcept;
-  friend bool operator==(const logical_path& lhs,
+  friend PKGEXEC_API bool operator==(const logical_path& lhs,
                          const logical_path& rhs) noexcept;
-  friend bool operator!=(const logical_path& lhs,
+  friend PKGEXEC_API bool operator!=(const logical_path& lhs,
                          const logical_path& rhs) noexcept;
-  friend bool operator<(const logical_path& lhs,
+  friend PKGEXEC_API bool operator<(const logical_path& lhs,
                         const logical_path& rhs) noexcept;
 private:
   explicit logical_path(std::string value);
@@ -160,18 +162,18 @@ private:
 };
 
 /*! \brief One semantic resource slot. */
-class resource_slot final {
+class PKGEXEC_API resource_slot final {
 public:
   [[nodiscard]] static resource_slot singleton(resource_role role);
   [[nodiscard]] static resource_slot named(resource_role role, std::string name);
   [[nodiscard]] resource_role role() const noexcept;
   [[nodiscard]] const std::string& name() const noexcept;
   [[nodiscard]] std::string text() const;
-  friend bool operator==(const resource_slot& lhs,
+  friend PKGEXEC_API bool operator==(const resource_slot& lhs,
                          const resource_slot& rhs) noexcept;
-  friend bool operator!=(const resource_slot& lhs,
+  friend PKGEXEC_API bool operator!=(const resource_slot& lhs,
                          const resource_slot& rhs) noexcept;
-  friend bool operator<(const resource_slot& lhs,
+  friend PKGEXEC_API bool operator<(const resource_slot& lhs,
                         const resource_slot& rhs) noexcept;
 private:
   resource_slot(resource_role role, std::string name);
@@ -180,7 +182,7 @@ private:
 };
 
 /*! \brief One exact resource made visible at one logical path. */
-class resource_binding final {
+class PKGEXEC_API resource_binding final {
 public:
   resource_binding(resource_slot slot, resource_identity resource,
                    resource_access access, logical_path mount_point);
@@ -188,11 +190,11 @@ public:
   [[nodiscard]] const resource_identity& resource() const noexcept;
   [[nodiscard]] resource_access access() const noexcept;
   [[nodiscard]] const logical_path& mount_point() const noexcept;
-  friend bool operator==(const resource_binding& lhs,
+  friend PKGEXEC_API bool operator==(const resource_binding& lhs,
                          const resource_binding& rhs) noexcept;
-  friend bool operator!=(const resource_binding& lhs,
+  friend PKGEXEC_API bool operator!=(const resource_binding& lhs,
                          const resource_binding& rhs) noexcept;
-  friend bool operator<(const resource_binding& lhs,
+  friend PKGEXEC_API bool operator<(const resource_binding& lhs,
                         const resource_binding& rhs) noexcept;
 private:
   resource_slot slot_;
@@ -202,7 +204,7 @@ private:
 };
 
 /*! \brief Complete logical resource layout for one execution. */
-class resource_layout final {
+class PKGEXEC_API resource_layout final {
 public:
   [[nodiscard]] static resource_layout seal(
       std::vector<resource_binding> bindings,
@@ -211,9 +213,9 @@ public:
   [[nodiscard]] const resource_slot& working_directory() const noexcept;
   [[nodiscard]] const resource_layout_identity& identity() const noexcept;
   [[nodiscard]] const resource_binding& binding(const resource_slot& slot) const;
-  friend bool operator==(const resource_layout& lhs,
+  friend PKGEXEC_API bool operator==(const resource_layout& lhs,
                          const resource_layout& rhs) noexcept;
-  friend bool operator!=(const resource_layout& lhs,
+  friend PKGEXEC_API bool operator!=(const resource_layout& lhs,
                          const resource_layout& rhs) noexcept;
 private:
   resource_layout(std::vector<resource_binding> bindings,
@@ -225,16 +227,16 @@ private:
 };
 
 /*! \brief One explicitly admitted environment variable. */
-class environment_variable final {
+class PKGEXEC_API environment_variable final {
 public:
   environment_variable(std::string name, std::string value);
   [[nodiscard]] const std::string& name() const noexcept;
   [[nodiscard]] const std::string& value() const noexcept;
-  friend bool operator==(const environment_variable& lhs,
+  friend PKGEXEC_API bool operator==(const environment_variable& lhs,
                          const environment_variable& rhs) noexcept;
-  friend bool operator!=(const environment_variable& lhs,
+  friend PKGEXEC_API bool operator!=(const environment_variable& lhs,
                          const environment_variable& rhs) noexcept;
-  friend bool operator<(const environment_variable& lhs,
+  friend PKGEXEC_API bool operator<(const environment_variable& lhs,
                         const environment_variable& rhs) noexcept;
 private:
   std::string name_;
@@ -242,7 +244,7 @@ private:
 };
 
 /*! \brief Closed environment and process-I/O policy. */
-class environment_policy final {
+class PKGEXEC_API environment_policy final {
 public:
   [[nodiscard]] static environment_policy hermetic(
       std::vector<logical_path> executable_search_path,
@@ -271,9 +273,9 @@ public:
   [[nodiscard]] const std::optional<std::int64_t>& source_date_epoch() const noexcept;
   [[nodiscard]] const std::vector<environment_variable>& additional_variables() const noexcept;
   [[nodiscard]] const environment_policy_identity& identity() const noexcept;
-  friend bool operator==(const environment_policy& lhs,
+  friend PKGEXEC_API bool operator==(const environment_policy& lhs,
                          const environment_policy& rhs) noexcept;
-  friend bool operator!=(const environment_policy& lhs,
+  friend PKGEXEC_API bool operator!=(const environment_policy& lhs,
                          const environment_policy& rhs) noexcept;
 private:
   environment_policy(std::vector<logical_path> executable_search_path,
@@ -303,7 +305,7 @@ private:
 };
 
 /*! \brief Exact numeric credential policy. */
-class credential_policy final {
+class PKGEXEC_API credential_policy final {
 public:
   [[nodiscard]] static credential_policy fixed(
       std::uint64_t user_id,
@@ -315,9 +317,9 @@ public:
   [[nodiscard]] const std::vector<std::uint64_t>& supplementary_groups() const noexcept;
   [[nodiscard]] bool no_new_privileges() const noexcept;
   [[nodiscard]] const credential_policy_identity& identity() const noexcept;
-  friend bool operator==(const credential_policy& lhs,
+  friend PKGEXEC_API bool operator==(const credential_policy& lhs,
                          const credential_policy& rhs) noexcept;
-  friend bool operator!=(const credential_policy& lhs,
+  friend PKGEXEC_API bool operator!=(const credential_policy& lhs,
                          const credential_policy& rhs) noexcept;
 private:
   credential_policy(std::uint64_t user_id,
@@ -333,7 +335,7 @@ private:
 };
 
 /*! \brief Optional deterministic resource-limit policy. */
-class resource_limits final {
+class PKGEXEC_API resource_limits final {
 public:
   [[nodiscard]] static resource_limits make(
       std::optional<std::uint64_t> cpu_time_milliseconds = std::nullopt,
@@ -348,9 +350,9 @@ public:
   [[nodiscard]] const std::optional<std::uint64_t>& process_count() const noexcept;
   [[nodiscard]] bool empty() const noexcept;
   [[nodiscard]] const resource_limits_identity& identity() const noexcept;
-  friend bool operator==(const resource_limits& lhs,
+  friend PKGEXEC_API bool operator==(const resource_limits& lhs,
                          const resource_limits& rhs) noexcept;
-  friend bool operator!=(const resource_limits& lhs,
+  friend PKGEXEC_API bool operator!=(const resource_limits& lhs,
                          const resource_limits& rhs) noexcept;
 private:
   resource_limits(std::optional<std::uint64_t> cpu_time_milliseconds,
@@ -368,16 +370,16 @@ private:
 };
 
 /*! \brief Explicit cancellation behavior. */
-class cancellation_policy final {
+class PKGEXEC_API cancellation_policy final {
 public:
   [[nodiscard]] static cancellation_policy disabled();
   [[nodiscard]] static cancellation_policy graceful_then_forced(
       std::uint64_t grace_period_milliseconds);
   [[nodiscard]] cancellation_mode mode() const noexcept;
   [[nodiscard]] const std::optional<std::uint64_t>& grace_period_milliseconds() const noexcept;
-  friend bool operator==(const cancellation_policy& lhs,
+  friend PKGEXEC_API bool operator==(const cancellation_policy& lhs,
                          const cancellation_policy& rhs) noexcept;
-  friend bool operator!=(const cancellation_policy& lhs,
+  friend PKGEXEC_API bool operator!=(const cancellation_policy& lhs,
                          const cancellation_policy& rhs) noexcept;
 private:
   cancellation_policy(cancellation_mode mode,
@@ -387,7 +389,7 @@ private:
 };
 
 /*! \brief Complete process termination observation. */
-class process_termination final {
+class PKGEXEC_API process_termination final {
 public:
   [[nodiscard]] static process_termination exited(std::uint32_t status);
   [[nodiscard]] static process_termination signaled(std::uint32_t signal);
@@ -396,9 +398,9 @@ public:
   [[nodiscard]] process_termination_kind kind() const noexcept;
   [[nodiscard]] const std::optional<std::uint32_t>& value() const noexcept;
   [[nodiscard]] const std::optional<resource_limit_kind>& limit() const noexcept;
-  friend bool operator==(const process_termination& lhs,
+  friend PKGEXEC_API bool operator==(const process_termination& lhs,
                          const process_termination& rhs) noexcept;
-  friend bool operator!=(const process_termination& lhs,
+  friend PKGEXEC_API bool operator!=(const process_termination& lhs,
                          const process_termination& rhs) noexcept;
 private:
   process_termination(process_termination_kind kind,
@@ -410,7 +412,7 @@ private:
 };
 
 /*! \brief Complete or digest-only captured stream evidence. */
-class stream_capture final {
+class PKGEXEC_API stream_capture final {
 public:
   [[nodiscard]] static stream_capture retained(std::string material);
   [[nodiscard]] static stream_capture observed(std::uint64_t byte_count,
@@ -418,9 +420,9 @@ public:
   [[nodiscard]] std::uint64_t byte_count() const noexcept;
   [[nodiscard]] const sha256_digest& digest() const noexcept;
   [[nodiscard]] const std::optional<std::string>& material() const noexcept;
-  friend bool operator==(const stream_capture& lhs,
+  friend PKGEXEC_API bool operator==(const stream_capture& lhs,
                          const stream_capture& rhs) noexcept;
-  friend bool operator!=(const stream_capture& lhs,
+  friend PKGEXEC_API bool operator!=(const stream_capture& lhs,
                          const stream_capture& rhs) noexcept;
 private:
   stream_capture(std::uint64_t byte_count,

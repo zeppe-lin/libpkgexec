@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <libpkgexec/export.h>
+
 #include <vector>
 
 #include <libpkgexec/model.h>
@@ -14,7 +16,7 @@ namespace pkgexec {
 
 inline constexpr std::uint16_t execution_request_schema_version = 1;
 
-class execution_request final {
+class PKGEXEC_API execution_request final {
 public:
   [[nodiscard]] static execution_request seal(
       pkgsource::program program,
@@ -41,9 +43,9 @@ public:
   [[nodiscard]] const std::vector<execution_guarantee>& required_guarantees() const noexcept;
   [[nodiscard]] const execution_request_identity& identity() const noexcept;
 
-  friend bool operator==(const execution_request& lhs,
+  friend PKGEXEC_API bool operator==(const execution_request& lhs,
                          const execution_request& rhs) noexcept;
-  friend bool operator!=(const execution_request& lhs,
+  friend PKGEXEC_API bool operator!=(const execution_request& lhs,
                          const execution_request& rhs) noexcept;
 private:
   execution_request(pkgsource::program program,

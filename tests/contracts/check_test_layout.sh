@@ -5,7 +5,7 @@ set -eu
 root=${1:?source root required}
 meson=$root/tests/meson.build
 
-for directory in unit integration protocol header fixtures support contracts; do
+for directory in unit integration protocol header fixtures support contracts installed; do
   [ -d "$root/tests/$directory" ] || {
     echo "test-layout: missing qualification role: $directory" >&2
     exit 1
@@ -42,6 +42,34 @@ grep -F "'test_layout'" "$meson" >/dev/null || {
 }
 grep -F 'test-layout' "$root/TESTING.md" >/dev/null || {
   echo 'test-layout: TESTING omits test-layout contract' >&2
+  exit 1
+}
+
+for product_file in \
+  "$root/tests/contracts/abi_layout_test.cpp" \
+  "$root/tests/contracts/check_abi_surface.sh" \
+  "$root/tests/contracts/check_dependency_abi.sh" \
+  "$root/tests/contracts/check_abi_contract.sh" \
+  "$root/tests/contracts/check_ci_contract.sh" \
+  "$root/tests/installed/consumer.cpp"; do
+  [ -s "$product_file" ] || {
+    echo "test-layout: missing release-product qualification: $product_file" >&2
+    exit 1
+  }
+done
+for registration in \
+  "'abi-layout'" \
+  "'abi-surface'" \
+  "'dependency-abi'" \
+  "'abi_contract'" \
+  "'ci_contract'"; do
+  grep -F "$registration" "$meson" >/dev/null || {
+    echo "test-layout: Meson omits release-product qualification: $registration" >&2
+    exit 1
+  }
+done
+grep -F 'tests/installed/consumer.cpp' "$root/ci/configure-and-test.sh" >/dev/null || {
+  echo 'test-layout: installed consumer is not part of release qualification' >&2
   exit 1
 }
 for support_file in \
