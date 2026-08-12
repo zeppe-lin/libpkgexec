@@ -7,6 +7,7 @@
 #include <libpkgexec/error.h>
 #include <libpkgexec/identity.h>
 #include <libpkgexec/model.h>
+#include <libpkgexec/profile_codec.h>
 #include <libpkgexec/request.h>
 #include <libpkgexec/result.h>
 #include <libpkgexec/result_codec.h>

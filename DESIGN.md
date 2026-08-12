@@ -106,6 +106,13 @@ retained but excluded from semantic identity.
 
 ## Durable result evidence
 
+Backend capability profiles have their own owner encoding. A profile is
+self-contained libpkgexec authority: exact backend identity plus the canonical
+guarantee set. Its decoder re-admits that body through
+`backend_capability_profile::seal`, verifies the retained profile identity, and
+requires canonical re-encoding. Higher layers may therefore retain historical
+backend authority without consulting whichever execution backend exists now.
+
 The result codec is deliberately qualified rather than self-contained. It
 retains only evidence owned by `libpkgexec` and records the identities of the
 semantic request and backend profile. Decoding requires those complete values
@@ -121,8 +128,9 @@ the execution-evidence identity, and requires canonical re-encoding.
 This avoids two invalid abstractions: duplicating the complete execution
 request schema inside a result record, and treating request or backend
 identities as sufficient material to recreate their semantic bodies. Higher
-layers that persist construction, check, or lifecycle evidence must retain or
-rehydrate those authorities independently.
+layers that persist construction, check, or lifecycle evidence must retain the
+request authority independently and may retain the backend authority through
+the profile owner codec.
 
 ## Backend boundary
 

@@ -14,6 +14,8 @@
 - Success requires exactly the requested guarantees and verified cleanup.
 - Diagnostic observations do not silently become semantic identity material.
 - Result records never reconstruct requests or backend profiles from identities.
+- Backend profile records reconstruct only the exact profile body they own:
+  backend identity plus canonical guarantees, never a live backend.
 - Durable result decoding verifies checksum before authority and semantic admission.
 - The core remains free of process syscalls and Linux isolation mechanisms.
 - Build, lifecycle, apply, state, transaction, and controller semantics remain

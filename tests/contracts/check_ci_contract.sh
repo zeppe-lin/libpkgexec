@@ -18,6 +18,8 @@ grep -F '9a2a85c85c20bbfa77306f3eb14ccc67ac1e800c' "$workflow" >/dev/null ||
 for text in 'meson install -C "$build/product"' 'tests/installed/consumer.cpp' 'pkg-config --static --libs libpkgexec' 'LD_LIBRARY_PATH='; do
   grep -F "$text" "$runner" >/dev/null || fail "runner omits installed-product gate: $text"
 done
+grep -F 'encode_backend_capability_profile(profile)' "$root/tests/installed/consumer.cpp" >/dev/null ||
+  fail 'installed consumer does not exercise backend-profile owner codec'
 
 for text in 'configure-and-test.sh' 'shared static' 'MESON_SANITIZE=address,undefined' 'LIBPKGSOURCE_SOURCE'; do
   grep -F "$text" "$qualify" >/dev/null || fail "local qualification omits release gate: $text"

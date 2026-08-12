@@ -8,8 +8,8 @@ The test tree separates evidence by role:
 - `integration` composes the real `libpkgsource` program authority with sealed
   execution requests, call-scoped resource admission, backend dispatch, and
   execution-result factories;
-- `protocol` qualifies canonical durable execution-result bytes independently
-  from ordinary semantic-result tests;
+- `protocol` qualifies canonical durable backend-profile and execution-result
+  bytes independently from ordinary semantic-result tests;
 - `header` compiles every public header and the umbrella independently; and
 - `contract` checks pkg-config, release, authority, codec, ABI surface/layout,
   provider generation, CI, and test-layout invariants; and
@@ -37,9 +37,10 @@ evidence may retain only guarantees present in the sealed request. A backend
 profile may advertise additional capabilities; one result may not claim a
 stricter or otherwise different execution contract.
 
-The protocol suite separates canonical semantic round trips in
-`protocol/result_codec_roundtrip_test.cpp` from corruption and authority attacks
-in `protocol/result_codec_corruption_test.cpp`. It covers success, digest-only
+The protocol suite separately qualifies backend-profile owner bytes and
+execution-result evidence. Backend-profile tests cover exact canonical round
+trip, truncation, checksum/magic/version damage, false identity, noncanonical
+guarantee order, and size refusal. Execution-result tests cover success, digest-only
 captures, unsupported backend evidence, cancellation before and after start,
 nonzero exit, signal termination, resource limits, capture failure, cleanup
 failure, checksum damage, truncation, magic/version/shape/evidence corruption,

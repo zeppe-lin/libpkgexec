@@ -1,5 +1,20 @@
 # History
 
+## libpkgexec 2.1.0
+
+Durable backend-profile authority release.
+
+- Added a canonical bounded encoding for one exact backend capability profile.
+- Reopened profiles from their retained backend identity and guarantee set
+  through the ordinary invariant-enforcing `backend_capability_profile::seal`
+  boundary.
+- Required checksum, retained profile identity, and canonical byte equality on
+  decode; malformed or noncanonical guarantee evidence fails closed.
+- Kept execution-result records qualified by caller-supplied request/profile
+  authorities rather than duplicating profile bodies inside every result.
+- Extended the reviewed `libpkgexec.so.2` ABI additively; existing public value
+  layouts and execution identity domains are unchanged.
+
 ## libpkgexec 2.0.0
 
 Truthful source-3 and execution-ABI release.

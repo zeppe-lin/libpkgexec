@@ -39,6 +39,8 @@ if get_option('tests').enabled()
   endforeach
 
   foreach case : [
+    ['backend-profile-codec-roundtrip', 'protocol/backend_profile_codec_roundtrip_test.cpp'],
+    ['backend-profile-codec-corruption', 'protocol/backend_profile_codec_corruption_test.cpp'],
     ['result-codec-roundtrip', 'protocol/result_codec_roundtrip_test.cpp'],
     ['result-codec-corruption', 'protocol/result_codec_corruption_test.cpp'],
   ]
@@ -58,6 +60,7 @@ if get_option('tests').enabled()
     'export.h',
     'identity.h',
     'model.h',
+    'profile_codec.h',
     'request.h',
     'result.h',
     'result_codec.h',
@@ -117,6 +120,7 @@ if get_option('tests').enabled()
     'pkgconfig_metadata',
     'release_metadata',
     'authority_contract',
+    'profile_codec_contract',
     'result_codec_contract',
     'test_layout',
     'abi_contract',

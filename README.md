@@ -36,6 +36,8 @@ The v2 core owns:
 - domain-separated request and evidence identities;
 - canonical bounded encoding of execution-owned result evidence under exact
   caller-supplied request and backend authorities.
+- canonical bounded profile-codec encoding of backend capability profiles as
+  self-contained libpkgexec-owned durable authority.
 
 It does not own:
 
@@ -63,7 +65,7 @@ select the same mode.
 
 ## Dependency
 
-`libpkgexec 2.0.0` requires `libpkgsource >= 3.0.1, < 4.0.0` and OpenSSL libcrypto.
+`libpkgexec 2.1.0` requires `libpkgsource >= 3.0.1, < 4.0.0` and OpenSSL libcrypto.
 
 ## License
 

@@ -90,8 +90,15 @@ int main()
       result.request().identity() != sealed.identity())
     return EXIT_FAILURE;
 
+  const auto encoded_profile = encode_backend_capability_profile(profile);
+  const auto decoded_profile =
+      decode_backend_capability_profile(encoded_profile);
+  if (decoded_profile != profile)
+    return EXIT_FAILURE;
+
   const auto encoded = encode_execution_result(result);
-  const auto decoded = decode_execution_result(encoded, sealed, profile);
+  const auto decoded = decode_execution_result(
+      encoded, sealed, decoded_profile);
   if (decoded.identity() != result.identity())
     return EXIT_FAILURE;
 

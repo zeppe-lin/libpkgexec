@@ -7,8 +7,8 @@ fail() { echo "abi-contract: $*" >&2; exit 1; }
 manifest=$root/abi/libpkgexec.exports
 [ -s "$manifest" ] || fail 'reviewed ELF ABI manifest is absent'
 count=$(sed -n '/^_Z[A-Za-z0-9_]*$/p' "$manifest" | wc -l)
-[ "$count" -eq 268 ] || fail "reviewed ELF ABI manifest contains $count symbols, expected 268"
-[ "$(LC_ALL=C sort -u "$manifest" | wc -l)" -eq 268 ] ||
+[ "$count" -eq 270 ] || fail "reviewed ELF ABI manifest contains $count symbols, expected 270"
+[ "$(LC_ALL=C sort -u "$manifest" | wc -l)" -eq 270 ] ||
   fail 'reviewed ELF ABI manifest contains duplicate symbols'
 ! grep -E '^_ZNSt|^_ZN9__gnu_cxx|^_ZSt' "$manifest" >/dev/null ||
   fail 'standard-library implementation symbol entered public ABI manifest'
@@ -41,7 +41,9 @@ done
 for required in \
   '_ZTIN7pkgexec5errorE' \
   '_ZTVN7pkgexec17execution_backendE' \
-  '_ZTVN7pkgexec28controlled_execution_backendE'
+  '_ZTVN7pkgexec28controlled_execution_backendE' \
+  '_ZN7pkgexec33encode_backend_capability_profileERKNS_26backend_capability_profileE' \
+  '_ZN7pkgexec33decode_backend_capability_profileERKSt6vectorIhSaIhEE'
  do
   grep -Fx "$required" "$manifest" >/dev/null ||
     fail "required public ABI symbol is absent: $required"

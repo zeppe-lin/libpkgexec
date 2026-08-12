@@ -4,7 +4,7 @@
 set -eu
 root=${1:?source root required}
 fail() { echo "release-metadata: $*" >&2; exit 1; }
-grep -F "version: '2.0.0'" "$root/meson.build" >/dev/null || fail 'project version is not 2.0.0'
+grep -F "version: '2.1.0'" "$root/meson.build" >/dev/null || fail 'project version is not 2.1.0'
 grep -F "soversion: '2'" "$root/src/meson.build" >/dev/null || fail 'SONAME is not 2'
 block=$(sed -n '/^libpkgsource_dep = dependency(/,/^)/p' "$root/meson.build")
 printf '%s\n' "$block" | grep -F "  version: ['>=3.0.1', '<4.0.0']," >/dev/null ||
@@ -17,4 +17,4 @@ done
   fail 'pkg-config source dependency object must occur exactly once'
 [ "$(grep -Fxc '  requires_private: [libcrypto_dep],' "$root/src/meson.build" || true)" -eq 1 ] ||
   fail 'pkg-config private crypto dependency must occur exactly once'
-grep -F '## libpkgexec 2.0.0' "$root/HISTORY.md" >/dev/null || fail '2.0.0 history entry is absent'
+grep -F '## libpkgexec 2.1.0' "$root/HISTORY.md" >/dev/null || fail '2.1.0 history entry is absent'
