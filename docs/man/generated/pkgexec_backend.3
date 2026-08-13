@@ -1,0 +1,27 @@
+.\" Generated from docs/man/pkgexec_backend.3.md; do not edit.
+.\"
+.TH "PKGEXEC_BACKEND" "3" "" "libpkgexec" "Version 2.1.0"
+.SH NAME
+pkgexec_backend \- executor capability and call\-scoped resource contract
+.SH SYNOPSIS
+\f[B]#include <libpkgexec/backend.h>\f[R]
+.SH DESCRIPTION
+\f[B]backend_capability_profile\f[R] seals one backend identity and the guarantees the backend can establish.
+\f[B]execution_resources::admit()\f[R] binds concrete absolute host paths to exactly the semantic resources retained by one request.
+.PP
+\f[B]execution_backend\f[R] exposes \f[B]capabilities()\f[R] and ordinary \f[B]execute()\f[R] for requests whose cancellation policy is disabled.
+.PP
+\f[B]controlled_execution_backend\f[R] adds a token\-bearing execution path.
+Its ordinary path is final and rejects cancellation\-enabled requests.
+The controlled path admits only a token bound to the exact request identity before calling the backend implementation.
+.PP
+The core does not prescribe process\-creation, pidfd, signal, or isolation mechanisms.
+.PP
+A backend must reject an unsupported request before process start.
+It must not silently degrade network denial, root\-view isolation, resource access, credential, capture, cancellation, limit, or cleanup guarantees.
+.PP
+Resource\-limit support is exact by kind.
+A profile advertises the aggregate \f[B]resource_limits\f[R] guarantee plus only the CPU\-time, address\-space, file\-size, open\-files, and process\-count guarantees it can establish truthfully.
+The aggregate guarantee and at least one exact kind must occur together.
+.SH SEE ALSO
+\f[B]libpkgexec\f[R](3), \f[B]pkgexec_request\f[R](3), \f[B]pkgexec_control\f[R](3), \f[B]pkgexec_result\f[R](3), \f[B]pkgexec_semantics\f[R](7)

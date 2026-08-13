@@ -1,4 +1,4 @@
-# Contributing
+# Contributing to libpkgexec
 
 Changes must preserve the authority boundaries documented in `DESIGN.md` and
 `MAINTAINING.md`.

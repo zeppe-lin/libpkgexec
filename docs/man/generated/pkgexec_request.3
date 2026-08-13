@@ -1,0 +1,26 @@
+.\" Generated from docs/man/pkgexec_request.3.md; do not edit.
+.\"
+.TH "PKGEXEC_REQUEST" "3" "" "libpkgexec" "Version 2.1.0"
+.SH NAME
+pkgexec_request \- sealed native execution request
+.SH SYNOPSIS
+\f[B]#include <libpkgexec/request.h>\f[R]
+.SH DESCRIPTION
+\f[B]execution_request::seal()\f[R] binds exact program bytes, typed purpose, interpreter identity, root\-view identity, logical resource layout, closed environment, numeric credentials, resource limits, cancellation policy, and all required execution guarantees.
+.PP
+Build, check, and lifecycle purposes are distinct.
+Lifecycle purpose is bound to one exact \f[B]pkgsource::lifecycle_action\f[R].
+.PP
+Concrete host paths are not request authority.
+They are admitted separately by \f[B]execution_resources\f[R] at backend call time.
+Cancellation policy is request identity; the live cancellation signal is admitted separately through \f[B]pkgexec_control\f[R](3).
+.PP
+A non\-empty resource\-limit policy derives the aggregate \f[B]resource_limits\f[R] guarantee and one exact guarantee for every populated kind.
+A backend that supports only address\-space and file\-size limits can therefore admit those requests without claiming CPU\-time, open\-files, or process\-count support.
+.SH INVARIANTS
+Resource slots and logical mount points are unique.
+Source and package\-input resources are read\-only.
+Workspaces, package\-output roots, and private temporary roots are writable.
+Environment\-variable order and resource declaration order are normalized where order is not semantic.
+.SH SEE ALSO
+\f[B]libpkgexec\f[R](3), \f[B]pkgexec_control\f[R](3), \f[B]pkgexec_backend\f[R](3), \f[B]pkgexec_semantics\f[R](7)

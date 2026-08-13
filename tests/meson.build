@@ -125,6 +125,10 @@ if get_option('tests').enabled()
     'test_layout',
     'abi_contract',
     'ci_contract',
+    'repository_contract',
+    'documentation_source',
+    'manpage_source',
+    'manpage_normalizer',
   ]
     script = join_paths(
       meson.current_source_dir(),
@@ -141,4 +145,18 @@ if get_option('tests').enabled()
       suite: 'contract',
     )
   endforeach
+
+  pandoc = find_program('pandoc', required: false)
+  if pandoc.found()
+    test(
+      'manpage-generated',
+      sh,
+      args: [
+        meson.current_source_dir() / 'contracts/check_manpage_generated.sh',
+        meson.project_source_root(),
+        pandoc.full_path(),
+      ],
+      suite: 'contract',
+    )
+  endif
 endif

@@ -1,4 +1,5 @@
-pkgexec_semantics(7)
+% PKGEXEC_SEMANTICS(7) libpkgexec | Version 2.1.0
+
 
 # NAME
 
@@ -6,7 +7,7 @@ pkgexec_semantics - native execution authority and identity rules
 
 # AUTHORITY
 
-A *pkgsource::program* remains the program authority. *libpkgexec* seals how that
+A **pkgsource::program** remains the program authority. **libpkgexec** seals how that
 program is to be executed and what evidence a backend produced. It does not
 reinterpret shell material or attach package-build or lifecycle meaning beyond
 the typed execution purpose.
@@ -40,7 +41,7 @@ controller storage.
 # RESOURCE LIMITS
 
 A limit value is request identity. Every non-empty limit policy requires the
-aggregate *resource_limits* guarantee and an exact guarantee for each populated
+aggregate **resource_limits** guarantee and an exact guarantee for each populated
 kind. Capability profiles describe only the kinds a backend can establish. The
 aggregate guarantee and at least one exact kind always occur together. Evidence
 may retain only guarantees present in the request; limit evidence is additionally
@@ -66,5 +67,5 @@ compatibility behavior.
 
 # SEE ALSO
 
-*libpkgexec*(3), *pkgexec_request*(3), *pkgexec_result*(3),
-*pkgexec_backend*(3), *pkgexec_control*(3)
+**libpkgexec**(3), **pkgexec_request**(3), **pkgexec_result**(3),
+**pkgexec_backend**(3), **pkgexec_control**(3)

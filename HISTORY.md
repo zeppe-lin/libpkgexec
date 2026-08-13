@@ -1,4 +1,4 @@
-# History
+# libpkgexec history
 
 ## libpkgexec 2.1.0
 

@@ -1,4 +1,4 @@
-# Migration
+# libpkgexec migration
 
 ## From 1.4 to 2.0
 

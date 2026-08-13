@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -eu
 root=${1:?source root required}
+fail(){ echo "test-layout-contract: $*" >&2; exit 1; }
 meson=$root/tests/meson.build
 
 for directory in unit integration protocol header fixtures support contracts installed; do
@@ -81,4 +82,16 @@ for support_file in \
     echo "test-layout: missing categorized support material: $support_file" >&2
     exit 1
   }
+done
+
+for contract in "$root"/tests/contracts/check_*.sh; do
+  name=${contract##*/check_}
+  name=${name%.sh}
+  case $name in
+    abi_surface|dependency_abi|pkgconfig_metadata|manpage_generated) continue ;;
+  esac
+  if ! grep -F "'$name'" "$root/tests/meson.build" >/dev/null &&
+     ! grep -F "check_${name}.sh" "$root/tests/meson.build" >/dev/null; then
+    fail "unregistered contract: check_${name}.sh"
+  fi
 done

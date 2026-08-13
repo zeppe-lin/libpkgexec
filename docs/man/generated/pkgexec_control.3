@@ -1,0 +1,31 @@
+.\" Generated from docs/man/pkgexec_control.3.md; do not edit.
+.\"
+.TH "PKGEXEC_CONTROL" "3" "" "libpkgexec" "Version 2.1.0"
+.SH NAME
+pkgexec_control \- request\-bound call\-scoped cancellation authority
+.SH SYNOPSIS
+\f[B]#include <libpkgexec/control.h>\f[R]
+.SH DESCRIPTION
+\f[B]cancellation_source::for_request()\f[R] creates the unique caller\-owned source for one execution request whose cancellation policy is enabled.
+\f[B]token()\f[R] returns a copyable read\-only token bound to that exact request identity.
+.PP
+\f[B]request_cancellation()\f[R] performs a monotonic one\-shot transition.
+The first transition returns true.
+Repeated requests are idempotent and return false.
+Tokens may query the state or wait for the transition.
+.PP
+The source, token, request time, and observation time are operational control state.
+They do not enter execution\-request or execution\-evidence identity.
+.SH INVARIANTS
+A cancellation source cannot be created for a request whose cancellation policy is disabled.
+A token for one request cannot control another request.
+.PP
+\f[B]controlled_execution_backend\f[R] accepts enabled cancellation only through its token\-bearing execution path.
+Its ordinary execution path is final and rejects enabled cancellation before backend implementation code is entered.
+.PP
+Cancellation evidence may be sealed only after the matching token reports that cancellation was requested.
+.SH THREAD SAFETY
+Copies of one token may be queried or waited upon concurrently with \f[B]request_cancellation()\f[R].
+The transition is visible monotonically to every copy.
+.SH SEE ALSO
+\f[B]libpkgexec\f[R](3), \f[B]pkgexec_backend\f[R](3), \f[B]pkgexec_request\f[R](3), \f[B]pkgexec_result\f[R](3), \f[B]pkgexec_semantics\f[R](7)

@@ -1,4 +1,4 @@
-# Testing
+# Testing libpkgexec
 
 The test tree separates evidence by role:
 

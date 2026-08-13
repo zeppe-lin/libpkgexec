@@ -1,0 +1,26 @@
+.\" Generated from docs/man/pkgexec_result.3.md; do not edit.
+.\"
+.TH "PKGEXEC_RESULT" "3" "" "libpkgexec" "Version 2.1.0"
+.SH NAME
+pkgexec_result \- sealed native execution evidence
+.SH SYNOPSIS
+\f[B]#include <libpkgexec/result.h>\f[R]
+.SH DESCRIPTION
+\f[B]execution_result\f[R] distinguishes a request rejected before process start from a started process outcome.
+Successful evidence requires exact interpreter identity, every requested guarantee, complete requested stream evidence, zero exit status, and verified cleanup.
+.PP
+Failed evidence retains a typed failure kind, process termination where a process started, guarantees actually established, stream evidence where available, and cleanup outcome.
+Every established guarantee must belong to the sealed request; a backend profile may advertise additional capabilities, but an individual result may not claim a different execution policy.
+Cancellation before start has no process termination.
+Cancellation after start retains cancelled termination.
+Both require a matching token whose signal was requested.
+.PP
+Limit evidence additionally remains exact by kind.
+Applying an undeclared limit changes the execution contract and is not admitted as a stronger result.
+Resource\-limit failure evidence names the exact requested kind, and both the aggregate and matching kind\-specific guarantees must have been established.
+Ordinary nonzero exits, signals, or syscall failures do not become resource\-limit evidence by guess.
+.PP
+Diagnostic text is retained but excluded from semantic execution identity.
+Process IDs, temporary host paths, wall\-clock timestamps, and elapsed time are not execution identity material.
+.SH SEE ALSO
+\f[B]libpkgexec\f[R](3), \f[B]pkgexec_request\f[R](3), \f[B]pkgexec_control\f[R](3), \f[B]pkgexec_backend\f[R](3), \f[B]pkgexec_result_codec\f[R](3), \f[B]pkgexec_semantics\f[R](7)

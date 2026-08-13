@@ -33,7 +33,7 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends clang libssl-dev ninja-build pkg-config python3-venv scdoc
+          sudo apt-get install --yes --no-install-recommends clang libssl-dev ninja-build pkg-config python3-venv pandoc
           python3 -m venv "$RUNNER_TEMP/meson"
           "$RUNNER_TEMP/meson/bin/pip" install 'meson==1.11.1'
           echo "$RUNNER_TEMP/meson/bin" >> "$GITHUB_PATH"
@@ -66,7 +66,7 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends clang libssl-dev ninja-build pkg-config python3-venv scdoc
+          sudo apt-get install --yes --no-install-recommends clang libssl-dev ninja-build pkg-config python3-venv pandoc
           python3 -m venv "$RUNNER_TEMP/meson"
           "$RUNNER_TEMP/meson/bin/pip" install 'meson==1.11.1'
           echo "$RUNNER_TEMP/meson/bin" >> "$GITHUB_PATH"

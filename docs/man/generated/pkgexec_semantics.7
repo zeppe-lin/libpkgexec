@@ -1,0 +1,42 @@
+.\" Generated from docs/man/pkgexec_semantics.7.md; do not edit.
+.\"
+.TH "PKGEXEC_SEMANTICS" "7" "" "libpkgexec" "Version 2.1.0"
+.SH NAME
+pkgexec_semantics \- native execution authority and identity rules
+.SH AUTHORITY
+A \f[B]pkgsource::program\f[R] remains the program authority.
+\f[B]libpkgexec\f[R] seals how that program is to be executed and what evidence a backend produced.
+It does not reinterpret shell material or attach package\-build or lifecycle meaning beyond the typed execution purpose.
+.SH IDENTITY
+Request identity includes the exact program digest and language, purpose, interpreter, root view, logical resources, closed environment, credentials, limits, cancellation policy, and required guarantees.
+.PP
+Evidence identity includes the request, backend capability profile, start state, termination, stream digests and byte counts, guarantees established, cleanup, and typed failure.
+Diagnostic text and host observations are excluded.
+.SH RESOURCE PATHS
+Logical process\-visible paths are request policy.
+Concrete host paths are call\-scoped backend resources and never enter semantic identities.
+.SH CANCELLATION
+Cancellation policy and grace period are request identity.
+A live cancellation source and its token are call\-scoped operational control and have no semantic identity.
+.PP
+The source is bound to one exact request.
+Its state changes at most once.
+A controlled backend must reject a token for any other request and must not obtain cancellation intent from ambient signals, global flags, process identifiers, or controller storage.
+.SH RESOURCE LIMITS
+A limit value is request identity.
+Every non\-empty limit policy requires the aggregate \f[B]resource_limits\f[R] guarantee and an exact guarantee for each populated kind.
+Capability profiles describe only the kinds a backend can establish.
+The aggregate guarantee and at least one exact kind always occur together.
+Evidence may retain only guarantees present in the request; limit evidence is additionally exact by populated kind.
+.PP
+Resource\-limit termination is exact evidence, not an interpretation of generic program failure.
+The named limit must occur in the request and its exact guarantee must have been established before process start.
+.SH FAILURE
+Program success does not prove isolation success.
+Successful evidence requires all requested guarantees and verified cleanup.
+Cleanup failure remains failure even after a zero process exit.
+A rollback or cleanup attempt is not evidence of success without verification.
+.SH EXCLUSIONS
+The v2 core contains no Linux executor, namespaces, Landlock, cgroups, process syscalls, source acquisition, package\-input materialization, artifact creation, filesystem application, lifecycle policy, state publication, or historical compatibility behavior.
+.SH SEE ALSO
+\f[B]libpkgexec\f[R](3), \f[B]pkgexec_request\f[R](3), \f[B]pkgexec_result\f[R](3), \f[B]pkgexec_backend\f[R](3), \f[B]pkgexec_control\f[R](3)

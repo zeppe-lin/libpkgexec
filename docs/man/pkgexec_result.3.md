@@ -1,4 +1,5 @@
-pkgexec_result(3)
+% PKGEXEC_RESULT(3) libpkgexec | Version 2.1.0
+
 
 # NAME
 
@@ -6,11 +7,11 @@ pkgexec_result - sealed native execution evidence
 
 # SYNOPSIS
 
-*#include <libpkgexec/result.h>*
+**#include <libpkgexec/result.h>**
 
 # DESCRIPTION
 
-*execution_result* distinguishes a request rejected before process start from a
+**execution_result** distinguishes a request rejected before process start from a
 started process outcome. Successful evidence requires exact interpreter
 identity, every requested guarantee, complete requested stream evidence, zero
 exit status, and verified cleanup.
@@ -36,6 +37,6 @@ not execution identity material.
 
 # SEE ALSO
 
-*libpkgexec*(3), *pkgexec_request*(3), *pkgexec_control*(3),
-*pkgexec_backend*(3), *pkgexec_result_codec*(3),
-*pkgexec_semantics*(7)
+**libpkgexec**(3), **pkgexec_request**(3), **pkgexec_control**(3),
+**pkgexec_backend**(3), **pkgexec_result_codec**(3),
+**pkgexec_semantics**(7)

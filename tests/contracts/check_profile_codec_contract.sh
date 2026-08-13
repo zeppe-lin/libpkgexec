@@ -7,7 +7,7 @@ header=$root/include/libpkgexec/profile_codec.h
 source=$root/src/profile_codec.cpp
 round_trip_test=$root/tests/protocol/backend_profile_codec_roundtrip_test.cpp
 corruption_test=$root/tests/protocol/backend_profile_codec_corruption_test.cpp
-manual=$root/man/pkgexec_profile_codec.3.scd
+manual=$root/docs/man/pkgexec_profile_codec.3.md
 
 for file in "$header" "$source" "$round_trip_test" "$corruption_test" "$manual"; do
   [ -s "$file" ] || {
@@ -23,7 +23,7 @@ for registration in \
   "$root/src/meson.build:../include/libpkgexec/profile_codec.h" \
   "$root/tests/meson.build:'profile_codec.h'" \
   "$root/tests/meson.build:'profile_codec_contract'" \
-  "$root/man/meson.build:pkgexec_profile_codec.3.scd"; do
+  "$root/docs/man/meson.build:pkgexec_profile_codec.3"; do
   file=${registration%%:*}
   token=${registration#*:}
   grep -F "$token" "$file" >/dev/null || {

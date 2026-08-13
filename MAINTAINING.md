@@ -45,5 +45,5 @@ legacy execution records, compatibility aliases, or an in-library old-ABI shim.
 7. Inspect the SONAME and require direct `NEEDED libpkgsource.so.3`; refuse obsolete source generations.
 8. Verify generated pkg-config metadata contains the exact source-3 interval once.
 9. Run `git diff --check` and `git fsck`.
-10. Render and lint manuals where scdoc and mandoc are available.
+10. Regenerate and byte-check committed manual pages with Pandoc 3.1+; lint generated roff where mandoc is available.
 11. Confirm `HISTORY.md`, package version, SONAME, dependency interval, ABI manifest, and CI pin agree.

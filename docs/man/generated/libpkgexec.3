@@ -1,0 +1,20 @@
+.\" Generated from docs/man/libpkgexec.3.md; do not edit.
+.\"
+.TH "LIBPKGEXEC" "3" "" "libpkgexec" "Version 2.1.0"
+.SH NAME
+libpkgexec \- native sealed program\-execution authority
+.SH SYNOPSIS
+\f[B]#include <libpkgexec/libpkgexec.h>\f[R]
+.SH DESCRIPTION
+\f[B]libpkgexec\f[R] defines immutable execution requests, call\-scoped resource admission, request\-bound cancellation control, backend capability profiles, and sealed execution evidence for exact \f[B]libpkgsource\f[R] program values.
+It also provides a versioned codec for execution\-owned result evidence under caller\-supplied request and backend authorities.
+.PP
+The core performs no process, namespace, mount, cgroup, or filesystem syscalls.
+Concrete executors implement \f[B]execution_backend\f[R] and must refuse requests whose required guarantees they cannot establish.
+.SH BOUNDARY
+The library does not acquire sources, materialize package inputs, build package artifacts, execute package lifecycle policy, apply filesystem transitions, or publish installed state.
+.SH ERRORS
+Contract failures throw \f[B]pkgexec::error\f[R].
+Branch on \f[B]error_code\f[R], not diagnostic text.
+.SH SEE ALSO
+\f[B]pkgexec_request\f[R](3), \f[B]pkgexec_control\f[R](3), \f[B]pkgexec_result\f[R](3), \f[B]pkgexec_result_codec\f[R](3), \f[B]pkgexec_backend\f[R](3), \f[B]pkgexec_semantics\f[R](7), \f[B]libpkgsource\f[R](3)
