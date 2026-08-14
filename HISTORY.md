@@ -1,5 +1,13 @@
 # libpkgexec history
 
+## libpkgexec 2.1.1
+
+Source-4 qualification release. The execution ABI remains `libpkgexec.so.2`,
+all execution/profile identity domains remain unchanged, and public program
+carrier layout is unchanged. This release makes the already-required
+`libpkgsource >= 4.0.0, < 5.0.0` closure version-addressable so downstream
+metadata cannot select the source-3-linked 2.1.0 binary.
+
 ## libpkgexec 2.1.0
 
 Durable backend-profile authority release.

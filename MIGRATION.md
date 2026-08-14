@@ -1,5 +1,13 @@
 # libpkgexec migration
 
+
+## From 2.1 to 2.1.1
+
+The public ABI remains `libpkgexec.so.2`, but the provider closure changes to
+`libpkgsource >= 4.0.0, < 5.0.0`. Rebuild execution consumers against 2.1.1 and
+do not mix the source-3-linked 2.1.0 DSO with source-4 authority. Execution and
+backend-profile identity domains are unchanged.
+
 ## From 1.4 to 2.0
 
 `libpkgexec 2.0.0` advances the shared ABI to `libpkgexec.so.2`. Rebuild every

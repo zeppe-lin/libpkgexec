@@ -1,4 +1,4 @@
-% PKGEXEC_SEMANTICS(7) libpkgexec | Version 2.1.0
+% PKGEXEC_SEMANTICS(7) libpkgexec | Version 2.1.1
 
 
 # NAME

@@ -29,10 +29,14 @@ reviewed symbol surface for that generation. Public carrier layouts are part of
 the C++ ABI even when an outer `sizeof` remains unchanged because variant or
 foreign alternatives may change internally.
 
-`execution_request` retains `pkgsource::program` by value. A future
-`libpkgsource` ABI generation therefore requires explicit layout and semantic
-review before widening the accepted `>= 3.0.1, < 4.0.0` interval. Do not add
-legacy execution records, compatibility aliases, or an in-library old-ABI shim.
+`execution_request` retains `pkgsource::program` by value. The source-4
+transition changed `source_input`, not `program` or `lifecycle_action`; their
+reviewed carrier layouts and semantics remain unchanged, so `libpkgexec.so.2`
+remains the correct execution ABI while the accepted owner interval advances to
+`libpkgsource >= 4.0.0, < 5.0.0`. A future source ABI generation requires the
+same explicit layout and semantic review before widening that interval. Do not
+add legacy execution records, compatibility aliases, or an in-library old-ABI
+shim.
 
 ## Release checklist
 
@@ -43,7 +47,7 @@ legacy execution records, compatibility aliases, or an in-library old-ABI shim.
 5. Run GCC and Clang ASan+UBSan qualification.
 6. Compare the shared dynamic symbol set exactly with `abi/libpkgexec.exports`.
 7. Inspect the SONAME and require direct `NEEDED libpkgsource.so.4`; refuse obsolete source generations.
-8. Verify generated pkg-config metadata contains the exact source-3 interval once.
+8. Verify generated pkg-config metadata contains the exact source-4 interval once.
 9. Run `git diff --check` and `git fsck`.
 10. Regenerate and byte-check committed manual pages with Pandoc 3.1+; lint generated roff where mandoc is available.
 11. Confirm `HISTORY.md`, package version, SONAME, dependency interval, ABI manifest, and CI pin agree.

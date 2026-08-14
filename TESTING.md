@@ -83,7 +83,7 @@ supervision mechanisms are qualified by `libpkgexec-linux`, not simulated here.
 
 ## Release-product qualification
 
-`ci/configure-and-test.sh` builds the exact source-3 dependency into an isolated
+`ci/configure-and-test.sh` builds the exact source-4 dependency into an isolated
 prefix, builds and tests `libpkgexec` as either a shared or static product,
 installs it, and then compiles `tests/installed/consumer.cpp` from the installed
 headers and generated pkg-config metadata. The consumer constructs a real
@@ -93,7 +93,7 @@ boundary.
 
 For shared builds, `abi-surface` requires the dynamic C++ symbol set to match
 `abi/libpkgexec.exports` exactly. `dependency-abi` requires
-`libpkgsource.so.4` and refuses source ABI generations 1 and 2. `abi-layout`
+`libpkgsource.so.4` and refuses source ABI generations 1, 2, and 3. `abi-layout`
 freezes the x86-64 public carriers, including the by-value `pkgsource::program`
 inside execution authority. The pkg-config contract requires exactly
 `libpkgsource >= 4.0.0, < 5.0.0` and rejects duplicate or stale constraints.
@@ -102,5 +102,5 @@ Local release qualification uses `ci/qualify.sh` with `LIBPKGSOURCE_SOURCE` set 
 
 Hosted CI executes GCC and Clang shared/static builds and a GCC release build.
 Separate GCC and Clang jobs run the shared product under ASan+UBSan. The
-workflow pins the exact qualified `libpkgsource 3.0.1` source authority rather
+workflow pins the exact qualified `libpkgsource 4.1.0` source authority rather
 than relying on whichever provider happens to be installed on the runner.

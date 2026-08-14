@@ -3,7 +3,7 @@
 project(
   'libpkgexec',
   'cpp',
-  version: '2.1.0',
+  version: '2.1.1',
   license: 'GPL-3.0-or-later',
   meson_version: '>=1.2.0',
   default_options: [
