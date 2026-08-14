@@ -27,9 +27,9 @@ normalize_requirements()
       -e 's/ *\([<>]=\|[<>=]\) */ \1 /' -e '/^$/d'
 }
 requires=$(sed -n 's/^Requires:[[:space:]]*//p' "$metadata" | tr ',' '\n' | normalize_requirements)
-expected='libpkgsource >= 3.0.1
-libpkgsource < 4.0.0'
-for requirement in 'libpkgsource >= 3.0.1' 'libpkgsource < 4.0.0'; do
+expected='libpkgsource >= 4.0.0
+libpkgsource < 5.0.0'
+for requirement in 'libpkgsource >= 4.0.0' 'libpkgsource < 5.0.0'; do
   count=$(printf '%s\n' "$requires" | grep -Fxc "$requirement" || true)
   [ "$count" -eq 1 ] || fail "metadata contains $count copies of '$requirement', expected exactly one"
 done

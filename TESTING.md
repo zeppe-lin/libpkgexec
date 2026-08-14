@@ -93,10 +93,10 @@ boundary.
 
 For shared builds, `abi-surface` requires the dynamic C++ symbol set to match
 `abi/libpkgexec.exports` exactly. `dependency-abi` requires
-`libpkgsource.so.3` and refuses source ABI generations 1 and 2. `abi-layout`
+`libpkgsource.so.4` and refuses source ABI generations 1 and 2. `abi-layout`
 freezes the x86-64 public carriers, including the by-value `pkgsource::program`
 inside execution authority. The pkg-config contract requires exactly
-`libpkgsource >= 3.0.1, < 4.0.0` and rejects duplicate or stale constraints.
+`libpkgsource >= 4.0.0, < 5.0.0` and rejects duplicate or stale constraints.
 
 Local release qualification uses `ci/qualify.sh` with `LIBPKGSOURCE_SOURCE` set to the exact qualified source tree; it drives the same installed-product runner for GCC and Clang shared/static builds plus both sanitizer builds.
 

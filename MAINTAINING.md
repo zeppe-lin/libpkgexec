@@ -42,7 +42,7 @@ legacy execution records, compatibility aliases, or an in-library old-ABI shim.
 4. Run GCC and Clang warnings-as-errors qualification.
 5. Run GCC and Clang ASan+UBSan qualification.
 6. Compare the shared dynamic symbol set exactly with `abi/libpkgexec.exports`.
-7. Inspect the SONAME and require direct `NEEDED libpkgsource.so.3`; refuse obsolete source generations.
+7. Inspect the SONAME and require direct `NEEDED libpkgsource.so.4`; refuse obsolete source generations.
 8. Verify generated pkg-config metadata contains the exact source-3 interval once.
 9. Run `git diff --check` and `git fsck`.
 10. Regenerate and byte-check committed manual pages with Pandoc 3.1+; lint generated roff where mandoc is available.

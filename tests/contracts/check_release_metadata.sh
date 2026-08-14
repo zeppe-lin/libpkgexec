@@ -7,8 +7,8 @@ fail() { echo "release-metadata: $*" >&2; exit 1; }
 grep -F "version: '2.1.0'" "$root/meson.build" >/dev/null || fail 'project version is not 2.1.0'
 grep -F "soversion: '2'" "$root/src/meson.build" >/dev/null || fail 'SONAME is not 2'
 block=$(sed -n '/^libpkgsource_dep = dependency(/,/^)/p' "$root/meson.build")
-printf '%s\n' "$block" | grep -F "  version: ['>=3.0.1', '<4.0.0']," >/dev/null ||
-  fail 'source dependency interval is not >=3.0.1,<4.0.0'
+printf '%s\n' "$block" | grep -F "  version: ['>=4.0.0', '<5.0.0']," >/dev/null ||
+  fail 'source dependency interval is not >=4.0.0,<5.0.0'
 ! printf '%s\n' "$block" | grep -F 'fallback:' >/dev/null || fail 'source fallback remains in generation-2 release'
 for ghost in planner_adapter yaml_adapter; do
   ! grep -F "$ghost" "$root/meson.build" >/dev/null || fail "obsolete source adapter option remains: $ghost"
