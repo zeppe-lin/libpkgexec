@@ -203,6 +203,7 @@ std::string_view to_string(resource_role value) noexcept
     case resource_role::package_output_root: return "package-output-root";
     case resource_role::managed_target_root: return "managed-target-root";
     case resource_role::private_temporary_root: return "private-temporary-root";
+    case resource_role::package_tree: return "package-tree";
   }
   return "unknown";
 }
@@ -470,10 +471,11 @@ resource_binding::resource_binding(resource_slot slot,
   const auto role = slot_.role();
   if ((role == resource_role::source_tree ||
        role == resource_role::build_input_tree ||
-       role == resource_role::check_input_tree) &&
+       role == resource_role::check_input_tree ||
+       role == resource_role::package_tree) &&
       access_ != resource_access::read_only) {
     throw error(error_code::invalid_policy,
-                "source and package-input resources must be read-only");
+                "source, package, and package-input resources must be read-only");
   }
   if ((role == resource_role::build_workspace ||
        role == resource_role::package_output_root ||

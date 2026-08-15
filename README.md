@@ -65,7 +65,7 @@ select the same mode.
 
 ## Dependency
 
-`libpkgexec 2.1.1` requires `libpkgsource >= 4.0.0, < 5.0.0` and OpenSSL libcrypto.
+`libpkgexec 2.2.0` requires `libpkgsource >= 4.0.0, < 5.0.0` and OpenSSL libcrypto.
 
 ## License
 

@@ -16,6 +16,11 @@ int main()
              "source-tree:main");
   TEST_CHECK(resource_slot::singleton(resource_role::build_workspace).text() ==
              "build-workspace");
+  TEST_CHECK(resource_slot::singleton(resource_role::package_tree).text() ==
+             "package-tree");
+  TEST_CHECK(static_cast<unsigned>(resource_role::source_tree) == 0U);
+  TEST_CHECK(static_cast<unsigned>(resource_role::private_temporary_root) == 6U);
+  TEST_CHECK(static_cast<unsigned>(resource_role::package_tree) == 7U);
   TEST_EXEC_THROWS(error_code::invalid_value,
                    resource_slot::singleton(resource_role::source_tree));
   TEST_EXEC_THROWS(error_code::invalid_value,
@@ -33,6 +38,16 @@ int main()
       resource_binding(resource_slot::named(resource_role::source_tree, "main"),
                        fixture::resource("source"), resource_access::writable,
                        logical_path::parse("/src")));
+  TEST_EXEC_THROWS(error_code::invalid_policy,
+      resource_binding(resource_slot::singleton(resource_role::package_tree),
+                       fixture::resource("package"), resource_access::writable,
+                       logical_path::parse("/check/package")));
+  const auto package_binding = resource_binding(
+      resource_slot::singleton(resource_role::package_tree),
+      fixture::resource("package"), resource_access::read_only,
+      logical_path::parse("/check/package"));
+  TEST_CHECK(package_binding.mount_point().string() == "/check/package");
+
   TEST_EXEC_THROWS(error_code::invalid_policy,
       resource_binding(resource_slot::singleton(resource_role::build_workspace),
                        fixture::resource("workspace"), resource_access::read_only,

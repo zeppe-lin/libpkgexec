@@ -28,6 +28,7 @@ enum class resource_role {
   package_output_root,
   managed_target_root,
   private_temporary_root,
+  package_tree,
 };
 enum class resource_access { read_only, writable };
 enum class locale_policy { c_utf8 };

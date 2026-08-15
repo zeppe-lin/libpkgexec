@@ -28,10 +28,11 @@ returns sealed evidence.
 Execution purposes are build, check, or lifecycle. Lifecycle requests are bound
 to exactly one `pkgsource::lifecycle_action`.
 
-Logical resources use typed roles. Source, build-input, and check-input trees
-are read-only. Workspaces, package-output roots, and private temporary roots are
-writable. Managed target roots may be read-only or writable according to the
-request.
+Logical resources use typed roles. Source, checked-package, build-input, and
+check-input trees are read-only. The checked-package tree is a singleton
+resource distinct from named package-input namespaces. Workspaces,
+package-output roots, and private temporary roots are writable. Managed target
+roots may be read-only or writable according to the request.
 
 Logical process paths are semantic policy. Host paths are not. Host paths occur
 only in `execution_resources` and never enter request or evidence identities.

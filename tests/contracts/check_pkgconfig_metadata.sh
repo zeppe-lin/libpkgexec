@@ -19,7 +19,7 @@ if [ ! -s "$metadata" ]; then
 fi
 [ -n "${metadata:-}" ] && [ -s "$metadata" ] || fail 'generated libpkgexec.pc was not found'
 [ "$(sed -n 's/^Name:[[:space:]]*//p' "$metadata")" = libpkgexec ] || fail 'wrong module name'
-[ "$(sed -n 's/^Version:[[:space:]]*//p' "$metadata")" = 2.1.1 ] || fail 'wrong module version'
+[ "$(sed -n 's/^Version:[[:space:]]*//p' "$metadata")" = 2.2.0 ] || fail 'wrong module version'
 normalize_requirements()
 {
   sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \

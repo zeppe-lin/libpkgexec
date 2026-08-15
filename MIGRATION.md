@@ -1,5 +1,13 @@
 # libpkgexec migration
 
+## From 2.1.1 to 2.2.0
+
+`resource_role::package_tree` is the neutral singleton role for an immutable
+package that is the subject of execution. It is not a named build/check input.
+Existing role numeric values are unchanged and the SONAME remains 2. Rebuild
+consumers that need the new role; old execution evidence remains bound to its
+unchanged request authority.
+
 
 ## From 2.1 to 2.1.1
 

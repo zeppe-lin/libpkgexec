@@ -1,4 +1,4 @@
-% LIBPKGEXEC(3) libpkgexec | Version 2.1.1
+% LIBPKGEXEC(3) libpkgexec | Version 2.2.0
 
 
 # NAME

@@ -1,5 +1,14 @@
 # libpkgexec history
 
+## libpkgexec 2.2.0
+
+Execution-role vocabulary release. Add the singleton read-only `package_tree`
+role for a package that is the subject of execution rather than a member of a
+named package-input namespace. The new role is appended after every existing
+role value, preserving all previously issued role bytes and therefore every
+existing execution identity. The public ABI remains `libpkgexec.so.2`; no
+private evidence format or identity-domain generation changes.
+
 ## libpkgexec 2.1.1
 
 Source-4 qualification release. The execution ABI remains `libpkgexec.so.2`,

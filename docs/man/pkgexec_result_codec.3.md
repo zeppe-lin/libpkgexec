@@ -1,4 +1,4 @@
-% PKGEXEC_RESULT_CODEC(3) libpkgexec | Version 2.1.1
+% PKGEXEC_RESULT_CODEC(3) libpkgexec | Version 2.2.0
 
 
 # NAME

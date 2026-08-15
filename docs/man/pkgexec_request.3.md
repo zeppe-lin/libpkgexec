@@ -1,4 +1,4 @@
-% PKGEXEC_REQUEST(3) libpkgexec | Version 2.1.1
+% PKGEXEC_REQUEST(3) libpkgexec | Version 2.2.0
 
 
 # NAME
@@ -31,9 +31,10 @@ requests without claiming CPU-time, open-files, or process-count support.
 
 # INVARIANTS
 
-Resource slots and logical mount points are unique. Source and package-input
-resources are read-only. Workspaces, package-output roots, and private temporary
-roots are writable. Environment-variable order and resource declaration order
+Resource slots and logical mount points are unique. Source, checked-package,
+and package-input resources are read-only. The checked package is a singleton
+role rather than a named package-input slot. Workspaces, package-output roots,
+and private temporary roots are writable. Environment-variable order and resource declaration order
 are normalized where order is not semantic.
 
 # SEE ALSO

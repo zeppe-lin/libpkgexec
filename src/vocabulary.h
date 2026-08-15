@@ -16,6 +16,7 @@ constexpr bool valid(resource_role value) noexcept
     case resource_role::package_output_root:
     case resource_role::managed_target_root:
     case resource_role::private_temporary_root:
+    case resource_role::package_tree:
       return true;
   }
   return false;
